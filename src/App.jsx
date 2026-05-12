@@ -740,7 +740,7 @@ export default function App() {
                   placeholder="브랜드명 또는 제품명으로 검색"
                   value={qnaProductSearch}
                   onChange={(e) => setQnaProductSearch(e.target.value)}
-                  className="w-full border border-gray-200 bg-gray-50 p-3 text-sm focus:border-black outline-none transition-colors cursor-none mb-2 rounded-sm"
+                  className="w-full border border-gray-200 bg-gray-50 p-3 text-sm focus:border-black outline-none transition-colors cursor-none mb-2 rounded-sm select-text"
                 />
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-64 overflow-y-auto p-4 border border-gray-200 bg-gray-50 rounded-sm cursor-none">
@@ -773,7 +773,7 @@ export default function App() {
                   placeholder="제목을 입력해주세요."
                   value={qnaForm.title}
                   onChange={(e) => setQnaForm({...qnaForm, title: e.target.value})}
-                  className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none"
+                  className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none select-text"
                 />
               </div>
 
@@ -784,7 +784,7 @@ export default function App() {
                   value={qnaForm.content}
                   onChange={(e) => setQnaForm({...qnaForm, content: e.target.value})}
                   rows={6}
-                  className="w-full border border-gray-300 focus:border-black outline-none p-4 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none resize-none rounded-sm"
+                  className="w-full border border-gray-300 focus:border-black outline-none p-4 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none resize-none rounded-sm select-text"
                 />
               </div>
 
@@ -899,7 +899,7 @@ export default function App() {
                     value={adminReply}
                     onChange={(e) => setAdminReply(e.target.value)}
                     rows={5}
-                    className="w-full border border-gray-300 focus:border-black outline-none p-4 text-sm transition-colors bg-white cursor-none resize-none rounded-sm"
+                    className="w-full border border-gray-300 focus:border-black outline-none p-4 text-sm transition-colors bg-white cursor-none resize-none rounded-sm select-text"
                   />
                   <div className="flex justify-end gap-4 cursor-none">
                     {isEditingReply && (
@@ -929,7 +929,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black font-sans flex cursor-none selection:bg-black selection:text-white overflow-hidden">
+    // 드래그 선택 금지를 위해 select-none 추가, selection 관련 코드 삭제
+    <div className="min-h-screen bg-white text-black font-sans flex cursor-none select-none overflow-hidden">
       
       {isAuthModalOpen && (
         <div 
@@ -963,7 +964,7 @@ export default function App() {
                 placeholder="Email" 
                 value={authForm.email}
                 onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
-                className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none"
+                className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none select-text"
               />
               
               {authMode === 'signup' && (
@@ -972,7 +973,7 @@ export default function App() {
                   placeholder="Name" 
                   value={authForm.name}
                   onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
-                  className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none"
+                  className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none select-text"
                 />
               )}
 
@@ -982,7 +983,7 @@ export default function App() {
                   placeholder="Password" 
                   value={authForm.password}
                   onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
-                  className="w-full border-b border-gray-300 focus:border-black none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none pr-8"
+                  className="w-full border-b border-gray-300 focus:border-black none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 cursor-none pr-8 select-text"
                 />
                 <button
                   type="button"
@@ -1166,7 +1167,7 @@ export default function App() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className="w-full border-b border-black outline-none bg-transparent text-sm pb-1 font-medium cursor-none focus:outline-none"
+                className="w-full border-b border-black outline-none bg-transparent text-sm pb-1 font-medium cursor-none focus:outline-none select-text"
                 autoFocus
               />
             </form>
