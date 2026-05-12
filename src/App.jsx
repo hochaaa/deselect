@@ -477,7 +477,8 @@ export default function App() {
         const sortedBrandProducts = getSortedProducts(finallyFiltered);
         return (
           <div className="mt-32 w-full cursor-none">
-            <div className="flex justify-between items-center mb-8 cursor-none">
+            {/* justify-between을 빼고 gap-5를 추가하여 이름 바로 옆에 하트를 붙임 */}
+            <div className="flex items-center gap-5 mb-8 cursor-none">
               <h2 className="text-5xl font-bold tracking-tighter cursor-none">{selectedBrand}</h2>
               <button 
                 onClick={(e) => toggleFavoriteBrand(e, selectedBrand)}
@@ -661,7 +662,6 @@ export default function App() {
       case 'customer':
         return (
           <div className="mt-32 w-full cursor-none">
-            {/* 시각적 오차(4px)를 완전히 없애기 위해 mb-4 -> mb-5 로 조정 */}
             <div className="flex justify-between items-center mb-5 cursor-none">
               <h2 className="text-5xl font-bold tracking-tighter cursor-none">STYLING Q&A</h2>
               <div></div>
