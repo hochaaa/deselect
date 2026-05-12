@@ -477,7 +477,6 @@ export default function App() {
         const sortedBrandProducts = getSortedProducts(finallyFiltered);
         return (
           <div className="mt-32 w-full cursor-none">
-            {/* justify-between을 빼고 gap-5를 추가하여 이름 바로 옆에 하트를 붙임 */}
             <div className="flex items-center gap-5 mb-8 cursor-none">
               <h2 className="text-5xl font-bold tracking-tighter cursor-none">{selectedBrand}</h2>
               <button 
@@ -1135,7 +1134,7 @@ export default function App() {
               </div>
             </div>
             <button onClick={() => { setCurrentView('about'); setIsProductMenuOpen(false); }} className={`text-left cursor-none transition outline-none ${currentView === 'about' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>About Us</button>
-            <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); }} className={`text-left transition outline-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>STYLING Q&A</button>
+            <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); }} className={`text-left cursor-none transition outline-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>STYLING Q&A</button>
             
             <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-gray-100 cursor-none">
               <button 
