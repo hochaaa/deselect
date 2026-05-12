@@ -33,7 +33,6 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
   
-  // 상태만 관리하고, 초기값은 DB에서 불러오도록 변경
   const [likedProductIds, setLikedProductIds] = useState([]);
   const [favoriteBrands, setFavoriteBrands] = useState([]);
   const [qnaList, setQnaList] = useState([]);
@@ -76,7 +75,6 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // ✅ 사용자가 로그인/로그아웃할 때마다 DB에서 좋아요 내역 불러오기
   useEffect(() => {
     if (currentUser) {
       async function fetchUserPrefs() {
@@ -127,7 +125,6 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isModalOpen, isAuthModalOpen, isLogoutModalOpen]);
 
-  // ✅ 상품 목록과 Q&A 목록을 DB에서 동시에 불러오기
   useEffect(() => {
     async function fetchData() {
       const [productsRes, qnaRes] = await Promise.all([
@@ -163,17 +160,14 @@ export default function App() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // ✅ 좋아요 내역을 DB에 저장하는 통합 함수
   const savePreferencesToDB = async (newProducts, newBrands) => {
     if (!currentUser) return;
     
     const { data } = await supabase.from('user_preferences').select('id').eq('email', currentUser.email).maybeSingle();
     
     if (data) {
-      // 이미 기록이 있으면 업데이트
       await supabase.from('user_preferences').update({ liked_products: newProducts, favorite_brands: newBrands }).eq('id', data.id);
     } else {
-      // 첫 좋아요라면 새로 생성
       await supabase.from('user_preferences').insert([{ email: currentUser.email, liked_products: newProducts, favorite_brands: newBrands }]);
     }
   };
@@ -301,7 +295,6 @@ export default function App() {
     await savePreferencesToDB(likedProductIds, newFavoriteBrands);
   };
 
-  // ✅ Q&A 작성 시 DB에 저장
   const handleQnaSubmit = async (e) => {
     e.preventDefault();
     if (!qnaForm.productId) return alert("스타일링이 궁금한 제품을 선택해주세요.");
@@ -323,11 +316,10 @@ export default function App() {
       setQnaProductSearch('');
       setCurrentView('customer');
     } else {
-      alert("오류 상세 원인: " + error.message);
+      alert("문의 등록 중 오류가 발생했습니다.");
     }
   };
 
-  // ✅ 어드민 답변 등록 시 DB 업데이트
   const handleAdminReply = async (e) => {
     e.preventDefault();
     if (!adminReply.trim()) return;
@@ -342,7 +334,6 @@ export default function App() {
     }
   };
 
-  // ✅ Q&A 삭제 시 DB에서 삭제
   const handleDeleteQna = async (id) => {
     if(window.confirm("이 문의글을 완전히 삭제하시겠습니까?")) {
       await supabase.from('qna').delete().eq('id', id);
@@ -352,7 +343,6 @@ export default function App() {
     }
   };
 
-  // ✅ 어드민 답변 삭제 시 DB 업데이트
   const handleDeleteReply = async (e) => {
     e.preventDefault();
     if(window.confirm("이 답변을 삭제하시겠습니까?")) {
@@ -665,7 +655,7 @@ export default function App() {
               <>
                 <ul className="flex flex-col gap-6 text-4xl font-medium tracking-tighter mt-8 cursor-none">
                   {favoriteBrands.map(brand => (
-                    <li key={brand} className="flex items-center justify-between group border-b border-gray-50 pb-6 cursor-none">
+                    <li key={brand} className="flex items-center gap-5 group border-b border-gray-50 pb-6 cursor-none">
                       <button 
                         onClick={() => { setSelectedBrand(brand); setSelectedCategory('All'); setCurrentView('brandDetail'); }} 
                         className="hover:text-gray-400 transition cursor-none text-left outline-none"
@@ -674,7 +664,7 @@ export default function App() {
                       </button>
                       <button 
                         onClick={(e) => toggleFavoriteBrand(e, brand)}
-                        className="outline-none cursor-none"
+                        className="outline-none cursor-none flex items-center justify-center"
                       >
                         <Heart strokeWidth={1.5} className="w-6 h-6 fill-black text-black hover:scale-125 transition-transform cursor-none" />
                       </button>
@@ -743,7 +733,6 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-6 text-sm text-gray-400 font-medium min-w-fit cursor-none">
                       <span className="cursor-none">{qna.author}</span>
-                      {/* DB의 날짜 형식 변환 */}
                       <span className="cursor-none">{new Date(qna.created_at).toLocaleDateString()}</span>
                     </div>
                   </button>
@@ -1212,19 +1201,25 @@ export default function App() {
 
       <main ref={mainRef} className="md:ml-64 w-full h-screen overflow-y-auto flex flex-col p-10 relative scroll-smooth cursor-none">
         
+        {/* 우측 상단 로그인 / 이름 표시부 */}
         {currentUser ? (
-          <button 
-            onClick={() => setIsLogoutModalOpen(true)}
-            className="absolute top-10 right-10 font-bold text-sm z-50 tracking-tight cursor-none text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none uppercase"
-          >
-            LOGOUT
-          </button>
+          <div className="absolute top-10 right-10 z-50 flex flex-col items-end gap-1 cursor-none">
+            <span className="font-bold text-sm tracking-tight cursor-none text-black">
+              {currentUser.user_metadata?.name || 'Guest'} 님
+            </span>
+            <button 
+              onClick={() => setIsLogoutModalOpen(true)}
+              className="font-bold text-xs tracking-tight cursor-none text-gray-400 hover:text-black transition border-b border-transparent hover:border-black pb-0.5 outline-none uppercase"
+            >
+              LOGOUT
+            </button>
+          </div>
         ) : (
           <button 
             onClick={() => setIsAuthModalOpen(true)}
-            className="absolute top-10 right-10 font-bold text-sm z-50 tracking-tight cursor-none text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none uppercase"
+            className="absolute top-10 right-10 font-bold text-sm z-50 tracking-tight cursor-none text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none"
           >
-            LOGIN / JOIN
+            Please Login.
           </button>
         )}
         
