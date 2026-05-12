@@ -20,7 +20,12 @@ export default function App() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const mainRef = useRef(null);
 
-  const [currentView, setCurrentView] = useState(() => sessionStorage.getItem('currentView') || 'home');
+  // 💡 [수정] 모바일 뒤로가기를 위해 초기 화면을 URL의 해시(#) 값에서 읽어오도록 수정
+  const [currentView, setCurrentView] = useState(() => {
+    const hash = window.location.hash.replace('#', '');
+    return hash || sessionStorage.getItem('currentView') || 'home';
+  });
+  
   const [isProductMenuOpen, setIsProductMenuOpen] = useState(() => sessionStorage.getItem('isProductMenuOpen') === 'true');
   const [selectedBrand, setSelectedBrand] = useState(() => sessionStorage.getItem('selectedBrand') || '');
   const [selectedCategory, setSelectedCategory] = useState(() => sessionStorage.getItem('selectedCategory') || 'All');
@@ -108,7 +113,14 @@ export default function App() {
     }
   }, [currentView, selectedBrand, selectedCategory, selectedSubCategory, likedTab, selectedQna]);
 
+  // 💡 [수정] 모바일 뒤로가기 처리를 위한 방문 기록(History API) 생성
   useEffect(() => {
+    if (!window.location.hash) {
+      window.history.replaceState(null, '', `#${currentView}`);
+    } else if (window.location.hash !== `#${currentView}`) {
+      window.history.pushState(null, '', `#${currentView}`);
+    }
+
     sessionStorage.setItem('currentView', currentView);
     sessionStorage.setItem('isProductMenuOpen', isProductMenuOpen);
     sessionStorage.setItem('selectedBrand', selectedBrand);
@@ -118,6 +130,24 @@ export default function App() {
     sessionStorage.setItem('sortOption', sortOption);
     sessionStorage.setItem('brandSortOption', brandSortOption);
   }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, sortOption, brandSortOption]);
+
+  // 💡 [추가] 모바일 기기의 시스템 '뒤로가기' 버튼을 눌렀을 때 작동하는 로직
+  useEffect(() => {
+    const handlePopState = () => {
+      const hash = window.location.hash.replace('#', '') || 'home';
+      setCurrentView(hash);
+      
+      // 뒤로가기 누르면 열려있던 모든 팝업과 메뉴창을 닫아줍니다.
+      setIsMobileMenuOpen(false);
+      setIsModalOpen(false);
+      setIsAuthModalOpen(false);
+      setIsLogoutModalOpen(false);
+      setIsSearchOpen(false);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -364,7 +394,6 @@ export default function App() {
     });
   };
 
-  // 💡 [수정] 브랜드 정렬 로직 완벽 반영 (숫자는 A-Z일때 하단, Z-A일때 상단)
   const getSortedBrands = (items) => {
     return [...items].sort((a, b) => {
       const isANumber = /^[0-9]/.test(a);
@@ -497,7 +526,6 @@ export default function App() {
             </div>
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="md:cursor-none">
-                {/* 💡 [수정] 호찬 님의 요청대로 심플하게 수정 완료! */}
                 <p className="text-sm text-gray-500 font-medium md:cursor-none break-keep">DE:SELECT</p>
               </div>
             </div>
