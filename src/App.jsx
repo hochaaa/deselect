@@ -477,8 +477,14 @@ export default function App() {
         const sortedBrandProducts = getSortedProducts(finallyFiltered);
         return (
           <div className="mt-32 w-full cursor-none">
-            <div className="flex justify-between items-end mb-4 cursor-none">
+            <div className="flex justify-between items-center mb-4 cursor-none">
               <h2 className="text-5xl font-bold tracking-tighter cursor-none">{selectedBrand}</h2>
+              <button 
+                onClick={(e) => toggleFavoriteBrand(e, selectedBrand)}
+                className="outline-none cursor-none flex items-center justify-center"
+              >
+                <Heart strokeWidth={1.5} className={`w-7 h-7 transition-transform hover:scale-125 cursor-none ${favoriteBrands.includes(selectedBrand) ? 'fill-black text-black' : 'text-gray-300 hover:text-black'}`} />
+              </button>
             </div>
             
             <div className="flex justify-between items-end border-b border-gray-200 pb-4 mb-8 cursor-none">
@@ -490,12 +496,6 @@ export default function App() {
               </div>
               
               <div className="flex flex-col items-end gap-3 cursor-none">
-                <button 
-                  onClick={(e) => toggleFavoriteBrand(e, selectedBrand)}
-                  className="outline-none cursor-none flex items-center justify-center"
-                >
-                  <Heart strokeWidth={1.5} className={`w-6 h-6 transition-transform hover:scale-125 cursor-none ${favoriteBrands.includes(selectedBrand) ? 'fill-black text-black' : 'text-gray-300 hover:text-black'}`} />
-                </button>
                 {renderSortDropdown()}
               </div>
             </div>
