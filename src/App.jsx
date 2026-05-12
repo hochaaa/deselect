@@ -38,6 +38,8 @@ export default function App() {
   const [qnaList, setQnaList] = useState([]);
 
   const [sortOption, setSortOption] = useState(() => sessionStorage.getItem('sortOption') || 'newest');
+  // 💡 [추가] 브랜드 정렬 상태
+  const [brandSortOption, setBrandSortOption] = useState(() => sessionStorage.getItem('brandSortOption') || 'A-Z');
 
   const [qnaForm, setQnaForm] = useState({ productId: '', title: '', content: '' });
   const [selectedQna, setSelectedQna] = useState(null);
@@ -115,7 +117,9 @@ export default function App() {
     sessionStorage.setItem('selectedSubCategory', selectedSubCategory);
     sessionStorage.setItem('searchedProducts', JSON.stringify(searchedProducts));
     sessionStorage.setItem('sortOption', sortOption);
-  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, sortOption]);
+    // 💡 [추가] 브랜드 정렬 상태 저장
+    sessionStorage.setItem('brandSortOption', brandSortOption);
+  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, sortOption, brandSortOption]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -136,13 +140,8 @@ export default function App() {
 
       if (!productsRes.error) {
         setProducts(productsRes.data);
-        const brands = [...new Set(productsRes.data.map(p => p.brand))].sort((a, b) => {
-          const isANumber = /^[0-9]/.test(a);
-          const isBNumber = /^[0-9]/.test(b);
-          if (isANumber && !isBNumber) return 1;
-          if (!isANumber && isBNumber) return -1;
-          return a.localeCompare(b);
-        });
+        const brands = [...new Set(productsRes.data.map(p => p.brand))];
+        // 💡 [수정] 초기 브랜드 정렬 제거 (brandSortOption에 따라 렌더링 시 정렬)
         setAvailableBrands(brands);
       }
       
@@ -190,7 +189,7 @@ export default function App() {
       }
       
       if (!pwRegex.test(authForm.password) || authForm.password.length < 6) {
-        return setAuthError('비밀번호는 영어, 숫자, 특수문자만 포함하여 6자리 이상이어야 합니다.');
+        return setAuthError('비밀번호는 영어, 숫자, 특수문자만 포함하여 6자리 이상어야 합니다.');
       }
 
       const { error } = await supabase.auth.signUp({
@@ -368,6 +367,15 @@ export default function App() {
     });
   };
 
+  // 💡 [추가] 브랜드 정렬 로직
+  const getSortedBrands = (items) => {
+    return [...items].sort((a, b) => {
+      if (brandSortOption === 'A-Z') return a.localeCompare(b);
+      if (brandSortOption === 'Z-A') return b.localeCompare(a);
+      return 0;
+    });
+  };
+
   const renderSortDropdown = () => (
     <select
       value={sortOption}
@@ -377,6 +385,18 @@ export default function App() {
       <option value="newest">Sort by: Newest</option>
       <option value="price_high">Price: High to Low</option>
       <option value="price_low">Price: Low to High</option>
+    </select>
+  );
+
+  // 💡 [추가] 브랜드 정렬 드롭다운
+  const renderBrandSortDropdown = () => (
+    <select
+      value={brandSortOption}
+      onChange={(e) => setBrandSortOption(e.target.value)}
+      className="text-[11px] font-mono uppercase tracking-widest bg-transparent md:cursor-none outline-none text-black transition-colors pb-1"
+    >
+      <option value="A-Z">Sort by: A-Z</option>
+      <option value="Z-A">Sort by: Z-A</option>
     </select>
   );
 
@@ -463,9 +483,11 @@ export default function App() {
       case 'about':
         return (
           <div className="mt-32 w-full md:cursor-none">
-            <div className="flex justify-between items-center mb-5 md:cursor-none">
+            {/* 💡 [수정] 제목 아래 문구 추가 및 간격 조정 */}
+            <div className="flex justify-between items-center mb-1 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">About Us</h2>
             </div>
+            <p className="text-sm text-gray-500 font-medium tracking-tight mb-4 md:cursor-none">짙은 취향의 연결, 새로운 경험의 시작.</p>
             <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
             
             <div className="max-w-2xl md:cursor-none">
@@ -484,15 +506,19 @@ export default function App() {
         );
 
       case 'brands':
+        // 💡 [수정] 정렬 로직 적용
+        const sortedBrands = getSortedBrands(availableBrands);
         return (
           <div className="mt-32 w-full md:cursor-none">
-            <div className="flex justify-between items-center mb-5 md:cursor-none">
+            {/* 💡 [수정] sort dropdown 추가 및 간격 조정 */}
+            <div className="flex justify-between items-center mb-1 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">Brands</h2>
+              <div>{renderBrandSortDropdown()}</div>
             </div>
             <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
             
             <ul className="flex flex-col gap-6 text-4xl font-medium tracking-tighter md:cursor-none">
-              {availableBrands.map(brand => (
+              {sortedBrands.map(brand => (
                 <li key={brand}>
                   <button 
                     onClick={() => { setSelectedBrand(brand); setSelectedCategory('All'); setCurrentView('brandDetail'); }} 
@@ -1202,7 +1228,7 @@ export default function App() {
         <div className="md:cursor-none shrink-0">
           <div className="flex justify-between items-center mb-12 md:cursor-none">
             <h1 onClick={() => { setCurrentView('home'); setIsProductMenuOpen(false); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} className="text-3xl font-bold tracking-tight md:cursor-none hover:text-gray-400 transition outline-none">DE:SELECT</h1>
-            <button className="md:hidden outline-none p-2 -mr-2" onClick={() => setIsMobileMenuOpen(false)}>
+            <button className="md:hidden outline-none p-2 -mr-2 md:cursor-none" onClick={() => setIsMobileMenuOpen(false)}>
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -1212,7 +1238,7 @@ export default function App() {
           <nav className="flex flex-col gap-5 md:gap-4 font-semibold text-lg tracking-tight md:cursor-none">
             <button onClick={() => { setCurrentView('brands'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'brands' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Brands</button>
             <div className="md:cursor-none">
-              <button onClick={() => setIsProductMenuOpen(!isProductMenuOpen)} className="flex items-center justify-between w-full md:cursor-none transition text-black hover:text-gray-400 outline-none"><span className="md:cursor-none">Product</span></button>
+              <button onClick={() => setIsProductMenuOpen(!isProductMenuOpen)} className="flex items-center justify-between w-full md:cursor-none transition text-black hover:text-gray-400 outline-none md:cursor-none"><span className="md:cursor-none">Product</span></button>
               <div className={`grid transition-all duration-300 ease-in-out md:cursor-none ${isProductMenuOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 mt-0'}`}>
                 <div className="overflow-hidden flex flex-col gap-4 md:gap-3 ml-4 text-sm md:text-sm font-medium md:cursor-none">
                   {categories.map(cat => (
@@ -1233,10 +1259,12 @@ export default function App() {
               </div>
             </div>
             <button onClick={() => { setCurrentView('about'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'about' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>About Us</button>
-            <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Styling Q&A</button>
+            <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left transition outline-none md:cursor-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Styling Q&A</button>
           </nav>
 
+          {/* 💡 [수정 My Page 버튼 위치 고정 및 검색 애니메이션 */}
           <div className="flex flex-col gap-4 mt-8 pt-4 border-t border-gray-100 md:cursor-none shrink-0">
+            {/* 💡 [수정] mb-4 추가하여 공간 확보 */}
             <button 
               onClick={() => { 
                 if (!currentUser) {
@@ -1248,23 +1276,23 @@ export default function App() {
                 setIsProductMenuOpen(false); 
                 setIsMobileMenuOpen(false);
               }} 
-              className={`font-semibold text-lg tracking-tight text-left md:cursor-none transition outline-none ${currentView === 'mypage' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}
+              className={`font-semibold text-lg tracking-tight text-left md:cursor-none transition outline-none mb-4 ${currentView === 'mypage' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}
             >
               My Page
             </button>
             
-            <div className="md:hidden mt-2 flex flex-col items-start">
+            <div className="md:hidden mt-2 flex flex-col items-start md:cursor-none">
               {currentUser ? (
                  <button 
                    onClick={() => { setIsLogoutModalOpen(true); setIsMobileMenuOpen(false); }}
-                   className="font-bold text-xs text-gray-400 border-b border-gray-400 pb-0.5 uppercase tracking-widest outline-none transition-colors"
+                   className="font-bold text-xs text-gray-400 border-b border-gray-400 pb-0.5 uppercase tracking-widest outline-none transition-colors md:cursor-none"
                  >
                    LOGOUT
                  </button>
               ) : (
                  <button 
                    onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
-                   className="font-bold text-xs text-black border-b border-black pb-0.5 uppercase tracking-widest outline-none transition-colors"
+                   className="font-bold text-xs text-black border-b border-black pb-0.5 uppercase tracking-widest outline-none transition-colors md:cursor-none"
                  >
                    LOGIN / JOIN
                  </button>
@@ -1273,22 +1301,22 @@ export default function App() {
           </div>
         </div>
         
-        <div className="hidden md:flex items-center gap-3 md:cursor-none shrink-0 pt-8">
+        {/* 💡 [수정] 검색창 오른쪽으로 부드럽게 나오게 애니메이션 추가 */}
+        <div className="hidden md:flex items-center gap-3 md:cursor-none shrink-0 pt-8 overflow-hidden">
           <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="outline-none md:cursor-none">
             <Search className="w-5 h-5 md:cursor-none text-black hover:text-gray-400 transition outline-none" />
           </button>
-          {isSearchOpen && (
-            <form onSubmit={handleSearch} className="flex-1 md:cursor-none">
-              <input 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                className="w-full border-b border-black outline-none bg-transparent text-sm pb-1 font-medium md:cursor-none focus:outline-none select-text"
-                autoFocus
-              />
-            </form>
-          )}
+          {/* 💡 [수정] transition 효과 적용 */}
+          <form onSubmit={handleSearch} className={`flex-1 md:cursor-none transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-full opacity-100' : 'w-0 opacity-0'}`}>
+            <input 
+              type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              className="w-full border-b border-black outline-none bg-transparent text-sm pb-1 font-medium md:cursor-none focus:outline-none select-text"
+              autoFocus={isSearchOpen}
+            />
+          </form>
         </div>
       </aside>
 
