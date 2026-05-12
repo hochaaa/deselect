@@ -477,7 +477,6 @@ export default function App() {
         const sortedBrandProducts = getSortedProducts(finallyFiltered);
         return (
           <div className="mt-32 w-full cursor-none">
-            {/* mb-4를 mb-8로 변경하여 제목과 아래 메뉴의 간격을 STYLING Q&A와 동일하게 맞춤 */}
             <div className="flex justify-between items-center mb-8 cursor-none">
               <h2 className="text-5xl font-bold tracking-tighter cursor-none">{selectedBrand}</h2>
               <button 
@@ -518,7 +517,6 @@ export default function App() {
             <h2 className="text-5xl font-bold tracking-tighter mb-8 cursor-none">{selectedCategory}</h2>
             <div className="flex justify-between items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] cursor-none">
               <div className="flex gap-6 text-sm font-semibold text-gray-400 cursor-none">
-                {/* Product -> All 화면일 때 카테고리(Outer, Top 등) 메뉴 표시 */}
                 {selectedCategory === 'All' ? (
                   <>
                     <button onClick={() => setSelectedCategory('All')} className="text-black transition cursor-none outline-none">All</button>
@@ -663,7 +661,8 @@ export default function App() {
       case 'customer':
         return (
           <div className="mt-32 w-full cursor-none">
-            <h2 className="text-5xl font-bold tracking-tighter mb-8 cursor-none">STYLING Q&A</h2>
+            {/* mb-8을 mb-4로 줄여 제목과 설명글 사이 간격을 ASP 화면과 동일하게 맞춤 */}
+            <h2 className="text-5xl font-bold tracking-tighter mb-4 cursor-none">STYLING Q&A</h2>
             <div className="flex justify-between items-center border-b border-gray-200 pb-4 mb-8 cursor-none">
               <div className="cursor-none">
                 <p className="text-sm text-gray-500 font-medium cursor-none">DE:SELECT 큐레이션 제품에 대한 스타일링 팁을 제안해 드립니다.</p>
@@ -1081,6 +1080,17 @@ export default function App() {
             </div>
             
             <div className="flex flex-col gap-3 cursor-none">
+              <button 
+                onClick={() => {
+                  window.open(targetLink, '_blank', 'noopener,noreferrer');
+                  setIsModalOpen(false);
+                }} 
+                className="w-full py-4 bg-black text-white text-sm font-bold tracking-widest hover:scale-105 hover:shadow-lg transition-all duration-300 flex justify-between items-center px-6 cursor-none outline-none"
+              >
+                <span className="cursor-none">CONTINUE</span>
+                <span className="cursor-none">→</span>
+              </button>
+              
               <button 
                 onClick={() => {
                   window.open(targetLink, '_blank', 'noopener,noreferrer');
