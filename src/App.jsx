@@ -38,7 +38,6 @@ export default function App() {
   const [qnaList, setQnaList] = useState([]);
 
   const [sortOption, setSortOption] = useState(() => sessionStorage.getItem('sortOption') || 'newest');
-  // 💡 [추가] 브랜드 정렬 상태
   const [brandSortOption, setBrandSortOption] = useState(() => sessionStorage.getItem('brandSortOption') || 'A-Z');
 
   const [qnaForm, setQnaForm] = useState({ productId: '', title: '', content: '' });
@@ -117,7 +116,6 @@ export default function App() {
     sessionStorage.setItem('selectedSubCategory', selectedSubCategory);
     sessionStorage.setItem('searchedProducts', JSON.stringify(searchedProducts));
     sessionStorage.setItem('sortOption', sortOption);
-    // 💡 [추가] 브랜드 정렬 상태 저장
     sessionStorage.setItem('brandSortOption', brandSortOption);
   }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, sortOption, brandSortOption]);
 
@@ -141,7 +139,6 @@ export default function App() {
       if (!productsRes.error) {
         setProducts(productsRes.data);
         const brands = [...new Set(productsRes.data.map(p => p.brand))];
-        // 💡 [수정] 초기 브랜드 정렬 제거 (brandSortOption에 따라 렌더링 시 정렬)
         setAvailableBrands(brands);
       }
       
@@ -189,7 +186,7 @@ export default function App() {
       }
       
       if (!pwRegex.test(authForm.password) || authForm.password.length < 6) {
-        return setAuthError('비밀번호는 영어, 숫자, 특수문자만 포함하여 6자리 이상어야 합니다.');
+        return setAuthError('비밀번호는 영어, 숫자, 특수문자만 포함하여 6자리 이상이어야 합니다.');
       }
 
       const { error } = await supabase.auth.signUp({
@@ -367,7 +364,6 @@ export default function App() {
     });
   };
 
-  // 💡 [추가] 브랜드 정렬 로직
   const getSortedBrands = (items) => {
     return [...items].sort((a, b) => {
       if (brandSortOption === 'A-Z') return a.localeCompare(b);
@@ -388,7 +384,6 @@ export default function App() {
     </select>
   );
 
-  // 💡 [추가] 브랜드 정렬 드롭다운
   const renderBrandSortDropdown = () => (
     <select
       value={brandSortOption}
@@ -483,12 +478,15 @@ export default function App() {
       case 'about':
         return (
           <div className="mt-32 w-full md:cursor-none">
-            {/* 💡 [수정] 제목 아래 문구 추가 및 간격 조정 */}
-            <div className="flex justify-between items-center mb-1 md:cursor-none">
+            {/* 모든 화면에서 mb-5 간격 및 min-h-[2.5rem] 등 완벽한 동기화 */}
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">About Us</h2>
             </div>
-            <p className="text-sm text-gray-500 font-medium tracking-tight mb-4 md:cursor-none">짙은 취향의 연결, 새로운 경험의 시작.</p>
-            <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="md:cursor-none">
+                <p className="text-sm text-gray-500 font-medium md:cursor-none break-keep">We are DE:SELECT</p>
+              </div>
+            </div>
             
             <div className="max-w-2xl md:cursor-none">
               <p className="text-lg leading-relaxed text-gray-600 mb-6 md:cursor-none">
@@ -506,16 +504,21 @@ export default function App() {
         );
 
       case 'brands':
-        // 💡 [수정] 정렬 로직 적용
         const sortedBrands = getSortedBrands(availableBrands);
         return (
           <div className="mt-32 w-full md:cursor-none">
-            {/* 💡 [수정] sort dropdown 추가 및 간격 조정 */}
-            <div className="flex justify-between items-center mb-1 md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">Brands</h2>
-              <div>{renderBrandSortDropdown()}</div>
             </div>
-            <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="hidden md:block md:cursor-none">
+                {/* 완벽한 높이 동기화를 위한 투명 텍스트 */}
+                <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
+              </div>
+              <div className="w-full md:w-auto flex justify-start md:justify-end mt-4 md:mt-0">
+                {renderBrandSortDropdown()}
+              </div>
+            </div>
             
             <ul className="flex flex-col gap-6 text-4xl font-medium tracking-tighter md:cursor-none">
               {sortedBrands.map(brand => (
@@ -622,8 +625,12 @@ export default function App() {
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">SEARCH</h2>
             </div>
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
-              <div className="md:cursor-none"></div>
-              {renderSortDropdown()}
+              <div className="hidden md:block md:cursor-none">
+                <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
+              </div>
+              <div className="w-full md:w-auto flex justify-start md:justify-end mt-4 md:mt-0">
+                {renderSortDropdown()}
+              </div>
             </div>
             {renderProductGrid(sortedSearchProducts)}
             {sortedSearchProducts.length === 0 && <p className="text-gray-400 mt-10 md:cursor-none">검색 결과가 없습니다.</p>}
@@ -636,7 +643,11 @@ export default function App() {
             <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">My Page</h2>
             </div>
-            <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="md:cursor-none">
+                <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
+              </div>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl md:cursor-none">
               <div className="border p-6 flex flex-col items-center justify-center text-center h-full min-h-[200px] md:cursor-none">
@@ -668,19 +679,11 @@ export default function App() {
             <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">LIKED</h2>
             </div>
-            <div className="flex gap-8 text-xl md:text-2xl font-bold tracking-tighter border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none">
-              <button 
-                onClick={() => setLikedTab('products')} 
-                className={`flex gap-2 items-center transition md:cursor-none outline-none ${likedTab === 'products' ? 'text-black' : 'text-gray-300 hover:text-black'}`}
-              >
-                <span className="md:cursor-none">Product</span>
-              </button>
-              <button 
-                onClick={() => setLikedTab('brands')} 
-                className={`flex gap-2 items-center transition md:cursor-none outline-none ${likedTab === 'brands' ? 'text-black' : 'text-gray-300 hover:text-black'}`}
-              >
-                <span className="md:cursor-none">Brand</span>
-              </button>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="flex gap-6 text-sm font-semibold text-gray-400 md:cursor-none">
+                <button onClick={() => setLikedTab('products')} className={`${likedTab === 'products' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>Product</button>
+                <button onClick={() => setLikedTab('brands')} className={`${likedTab === 'brands' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>Brand</button>
+              </div>
             </div>
 
             {likedTab === 'products' && (
@@ -734,7 +737,6 @@ export default function App() {
           <div className="mt-32 w-full md:cursor-none">
             <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">STYLING Q&A</h2>
-              <div></div>
             </div>
 
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
@@ -750,7 +752,7 @@ export default function App() {
                   }
                   setCurrentView('qnaWrite');
                 }}
-                className="px-6 py-2 bg-black text-white text-xs font-bold tracking-widest hover:scale-105 transition-transform md:cursor-none outline-none w-fit"
+                className="px-6 py-1 bg-black text-white text-xs font-bold tracking-widest hover:scale-105 transition-transform md:cursor-none outline-none w-fit"
               >
                 WRITE
               </button>
@@ -802,7 +804,11 @@ export default function App() {
             <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">ASK STYLING</h2>
             </div>
-            <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="md:cursor-none">
+                <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
+              </div>
+            </div>
             
             <form onSubmit={handleQnaSubmit} className="flex flex-col gap-10 md:cursor-none">
               
@@ -1262,9 +1268,7 @@ export default function App() {
             <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left transition outline-none md:cursor-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Styling Q&A</button>
           </nav>
 
-          {/* 💡 [수정 My Page 버튼 위치 고정 및 검색 애니메이션 */}
           <div className="flex flex-col gap-4 mt-8 pt-4 border-t border-gray-100 md:cursor-none shrink-0">
-            {/* 💡 [수정] mb-4 추가하여 공간 확보 */}
             <button 
               onClick={() => { 
                 if (!currentUser) {
@@ -1301,12 +1305,10 @@ export default function App() {
           </div>
         </div>
         
-        {/* 💡 [수정] 검색창 오른쪽으로 부드럽게 나오게 애니메이션 추가 */}
         <div className="hidden md:flex items-center gap-3 md:cursor-none shrink-0 pt-8 overflow-hidden">
           <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="outline-none md:cursor-none">
             <Search className="w-5 h-5 md:cursor-none text-black hover:text-gray-400 transition outline-none" />
           </button>
-          {/* 💡 [수정] transition 효과 적용 */}
           <form onSubmit={handleSearch} className={`flex-1 md:cursor-none transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-full opacity-100' : 'w-0 opacity-0'}`}>
             <input 
               type="text" 
