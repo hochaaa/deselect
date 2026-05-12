@@ -661,14 +661,12 @@ export default function App() {
       case 'customer':
         return (
           <div className="mt-32 w-full cursor-none">
-            {/* 1. 제목 줄 (ASP 제목 줄 구조 복제: mb-4, items-center) */}
-            <div className="flex justify-between items-center mb-4 cursor-none">
+            {/* 시각적 오차(4px)를 완전히 없애기 위해 mb-4 -> mb-5 로 조정 */}
+            <div className="flex justify-between items-center mb-5 cursor-none">
               <h2 className="text-5xl font-bold tracking-tighter cursor-none">STYLING Q&A</h2>
-              {/* 우측 공간 비워둠 */}
               <div></div>
             </div>
-            
-            {/* 2. 설명글 + WRITE 버튼 줄 (ASP 메뉴 줄 구조 복제: items-end, border-b, pb-4, mb-8) */}
+
             <div className="flex justify-between items-end border-b border-gray-200 pb-4 mb-8 cursor-none">
               <div className="cursor-none">
                 <p className="text-sm text-gray-500 font-medium cursor-none">DE:SELECT 큐레이션 제품에 대한 스타일링 팁을 제안해 드립니다.</p>
