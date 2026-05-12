@@ -484,7 +484,7 @@ export default function App() {
             </div>
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="md:cursor-none">
-                <p className="text-sm text-gray-500 font-medium md:cursor-none break-keep">We are DE:SELECT</p>
+                <p className="text-sm text-gray-500 font-medium md:cursor-none break-keep">DE:SELECT</p>
               </div>
             </div>
             
