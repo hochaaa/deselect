@@ -462,25 +462,35 @@ export default function App() {
 
       case 'about':
         return (
-          <div className="max-w-2xl mt-32 md:cursor-none">
-            <h2 className="text-4xl font-bold tracking-tight mb-8 md:cursor-none">About Us</h2>
-            <p className="text-lg leading-relaxed text-gray-600 mb-6 md:cursor-none">
-              넘쳐나는 정보와 빠르게 변화하는 트렌드 속에서, 우리는 아직 온전한 취향을 발견하지 못한 이들을 위해 존재합니다. 가격이나 불필요한 이슈 등 편견에 구애받지 않고 오직 제품만을 통해 우리의 시각을 제안하는 <strong>큐레이션 플랫폼</strong>입니다.
-            </p>
-            <p className="text-lg leading-relaxed text-gray-600 mb-6 md:cursor-none">
-              취향이라는 것은 오직 한가지 스타일에만 매몰되지 않아도 된다고 생각합니다.<br />
-              한 사람을 한가지 단어로 정의할 수 없듯이, 우리는 패션에 있어서도 하나의 스타일만을 고집하지 않고 다양한 시도를 해보는 것을 제안합니다.
-            </p>
-            <p className="text-lg leading-relaxed text-gray-600 md:cursor-none">
-              <strong>개인의 짙은 취향이, 타인의 새로운 경험이 되기까지의 여정을 함께합니다.</strong>
-            </p>
+          <div className="mt-32 w-full md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">About Us</h2>
+            </div>
+            <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
+            
+            <div className="max-w-2xl md:cursor-none">
+              <p className="text-lg leading-relaxed text-gray-600 mb-6 md:cursor-none">
+                넘쳐나는 정보와 빠르게 변화하는 트렌드 속에서, 우리는 아직 온전한 취향을 발견하지 못한 이들을 위해 존재합니다. 가격이나 불필요한 이슈 등 편견에 구애받지 않고 오직 제품만을 통해 우리의 시각을 제안하는 <strong>큐레이션 플랫폼</strong>입니다.
+              </p>
+              <p className="text-lg leading-relaxed text-gray-600 mb-6 md:cursor-none">
+                취향이라는 것은 오직 한가지 스타일에만 매몰되지 않아도 된다고 생각합니다.<br />
+                한 사람을 한가지 단어로 정의할 수 없듯이, 우리는 패션에 있어서도 하나의 스타일만을 고집하지 않고 다양한 시도를 해보는 것을 제안합니다.
+              </p>
+              <p className="text-lg leading-relaxed text-gray-600 md:cursor-none">
+                <strong>개인의 짙은 취향이, 타인의 새로운 경험이 되기까지의 여정을 함께합니다.</strong>
+              </p>
+            </div>
           </div>
         );
 
       case 'brands':
         return (
-          <div className="mt-32 md:cursor-none">
-            <h2 className="text-3xl font-bold tracking-tight mb-12">Brands</h2>
+          <div className="mt-32 w-full md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">Brands</h2>
+            </div>
+            <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
+            
             <ul className="flex flex-col gap-6 text-4xl font-medium tracking-tighter md:cursor-none">
               {availableBrands.map(brand => (
                 <li key={brand}>
@@ -502,7 +512,7 @@ export default function App() {
         const sortedBrandProducts = getSortedProducts(finallyFiltered);
         return (
           <div className="mt-32 w-full md:cursor-none">
-            <div className="flex items-center gap-5 mb-8 md:cursor-none">
+            <div className="flex items-center gap-5 mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">{selectedBrand}</h2>
               <button 
                 onClick={(e) => toggleFavoriteBrand(e, selectedBrand)}
@@ -512,7 +522,7 @@ export default function App() {
               </button>
             </div>
             
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 md:cursor-none gap-4 md:gap-0">
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="flex flex-wrap gap-4 md:gap-6 text-sm font-semibold text-gray-400 md:cursor-none">
                 <button onClick={() => setSelectedCategory('All')} className={`${selectedCategory === 'All' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>All</button>
                 {categories.slice(1).map(cat => (
@@ -539,7 +549,9 @@ export default function App() {
 
         return (
           <div className="mt-32 w-full md:cursor-none">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-8 md:cursor-none">{selectedCategory}</h2>
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">{selectedCategory}</h2>
+            </div>
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="flex flex-wrap gap-4 md:gap-6 text-sm font-semibold text-gray-400 md:cursor-none">
                 {selectedCategory === 'All' ? (
@@ -580,8 +592,11 @@ export default function App() {
         const sortedSearchProducts = getSortedProducts(searchedProducts);
         return (
           <div className="mt-32 w-full md:cursor-none">
-            <div className="flex justify-between items-end border-b border-gray-200 pb-4 mb-8 md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">SEARCH</h2>
+            </div>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="md:cursor-none"></div>
               {renderSortDropdown()}
             </div>
             {renderProductGrid(sortedSearchProducts)}
@@ -591,10 +606,13 @@ export default function App() {
 
       case 'mypage':
         return (
-          <div className="mt-32 w-full max-w-4xl md:cursor-none">
-            <h2 className="text-3xl font-bold tracking-tight mb-12 md:cursor-none">My Page</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:cursor-none">
-              
+          <div className="mt-32 w-full md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">My Page</h2>
+            </div>
+            <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl md:cursor-none">
               <div className="border p-6 flex flex-col items-center justify-center text-center h-full min-h-[200px] md:cursor-none">
                 <div className="w-20 h-20 bg-gray-200 rounded-full mb-4 flex items-center justify-center md:cursor-none"><User className="text-gray-500 w-8 h-8 md:cursor-none"/></div>
                 <h3 className="font-bold text-lg mb-1 md:cursor-none">{currentUser ? currentUser.user_metadata?.name : 'Guest'} 님</h3>
@@ -611,7 +629,6 @@ export default function App() {
                   <p className="text-sm text-gray-500 mt-2 md:cursor-none">Product / Brands </p>
                 </div>
               </button>
-
             </div>
           </div>
         );
@@ -622,9 +639,10 @@ export default function App() {
         
         return (
           <div className="mt-32 w-full md:cursor-none">
-            <h2 className="text-5xl font-bold tracking-tighter mb-12 md:cursor-none">LIKED</h2>
-            
-            <div className="flex gap-8 text-xl md:text-2xl font-bold tracking-tighter mb-8 border-b border-gray-200 pb-4 md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">LIKED</h2>
+            </div>
+            <div className="flex gap-8 text-xl md:text-2xl font-bold tracking-tighter border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none">
               <button 
                 onClick={() => setLikedTab('products')} 
                 className={`flex gap-2 items-center transition md:cursor-none outline-none ${likedTab === 'products' ? 'text-black' : 'text-gray-300 hover:text-black'}`}
@@ -693,7 +711,7 @@ export default function App() {
               <div></div>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 md:cursor-none gap-4 md:gap-0">
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="md:cursor-none">
                 <p className="text-sm text-gray-500 font-medium md:cursor-none break-keep">DE:SELECT 큐레이션 제품에 대한 스타일링 팁을 제안해 드립니다.</p>
               </div>
@@ -755,7 +773,10 @@ export default function App() {
       case 'qnaWrite':
         return (
           <div className="mt-32 w-full max-w-4xl mx-auto md:cursor-none">
-            <h2 className="text-4xl font-bold tracking-tighter mb-8 border-b border-gray-200 pb-4 md:cursor-none">ASK STYLING</h2>
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">ASK STYLING</h2>
+            </div>
+            <div className="border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none"></div>
             
             <form onSubmit={handleQnaSubmit} className="flex flex-col gap-10 md:cursor-none">
               
@@ -867,8 +888,10 @@ export default function App() {
               )}
             </div>
             
-            <h2 className="text-3xl font-bold tracking-tight mb-8 md:cursor-none">{selectedQna.title}</h2>
-            <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-8 md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">{selectedQna.title}</h2>
+            </div>
+            <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-8 min-h-[2.5rem] md:cursor-none">
               <div className="flex gap-6 text-sm font-medium text-gray-500 md:cursor-none">
                 <span className="md:cursor-none">{selectedQna.author}</span>
                 <span className="md:cursor-none">{new Date(selectedQna.created_at).toLocaleDateString()}</span>
@@ -1174,10 +1197,8 @@ export default function App() {
         <div className="md:hidden fixed inset-0 bg-black/20 z-[95] backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
-      {/* 💡 [수정] 사이드바 내부 구조 개편: 메뉴를 스크롤 영역에 넣고, 하단 버튼은 고정하여 겹침 방지 */}
       <aside className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-100 p-8 md:p-10 flex flex-col z-[100] transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:cursor-none`}>
         
-        {/* 상단 로고 및 닫기 버튼 */}
         <div className="md:cursor-none shrink-0">
           <div className="flex justify-between items-center mb-12 md:cursor-none">
             <h1 onClick={() => { setCurrentView('home'); setIsProductMenuOpen(false); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} className="text-3xl font-bold tracking-tight md:cursor-none hover:text-gray-400 transition outline-none">DE:SELECT</h1>
@@ -1187,7 +1208,6 @@ export default function App() {
           </div>
         </div>
         
-        {/* 💡 [핵심] 스크롤되는 메뉴 영역 */}
         <div className="flex-1 overflow-y-auto flex flex-col justify-between pb-4">
           <nav className="flex flex-col gap-5 md:gap-4 font-semibold text-lg tracking-tight md:cursor-none">
             <button onClick={() => { setCurrentView('brands'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'brands' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Brands</button>
@@ -1213,10 +1233,9 @@ export default function App() {
               </div>
             </div>
             <button onClick={() => { setCurrentView('about'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'about' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>About Us</button>
-            <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left transition outline-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>STYLING Q&A</button>
+            <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Styling Q&A</button>
           </nav>
 
-          {/* 하단 마이페이지 및 모바일 로그인/로그아웃 버튼 (Product 메뉴가 열려도 같이 밀려 내려가므로 안 겹침!) */}
           <div className="flex flex-col gap-4 mt-8 pt-4 border-t border-gray-100 md:cursor-none shrink-0">
             <button 
               onClick={() => { 
@@ -1254,7 +1273,6 @@ export default function App() {
           </div>
         </div>
         
-        {/* 데스크탑에서만 보이는 왼쪽 하단 검색창 */}
         <div className="hidden md:flex items-center gap-3 md:cursor-none shrink-0 pt-8">
           <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="outline-none md:cursor-none">
             <Search className="w-5 h-5 md:cursor-none text-black hover:text-gray-400 transition outline-none" />
@@ -1276,7 +1294,6 @@ export default function App() {
 
       <main ref={mainRef} className="md:ml-64 w-full h-screen overflow-y-auto flex flex-col p-6 pt-24 md:p-10 relative scroll-smooth md:cursor-none">
         
-        {/* 💡 [수정] PC 우측 상단 로그인/로그아웃 버튼 사이즈(text-xs), 여백(pb-0.5) 완벽 통일 */}
         <div className="hidden md:block">
           {currentUser ? (
             <div className="absolute top-10 right-10 z-40 flex flex-col items-end gap-1 md:cursor-none">
@@ -1299,10 +1316,9 @@ export default function App() {
             </button>
           )}
         </div>
-        
+
         <div className="flex-1 md:cursor-none">{renderContent()}</div>
         
-        {/* 💡 [수정] Footer 하단 쓸데없는 내용 완전 삭제 & PC/모바일 모두 왼쪽 정렬로 통일 */}
         <footer className="mt-32 pt-8 border-t border-black flex pb-12 md:cursor-none">
           <div className="text-left md:cursor-none">
             <p className="text-xl font-bold tracking-tighter text-black mb-1 md:cursor-none">DE:SELECT</p>
