@@ -477,7 +477,8 @@ export default function App() {
         const sortedBrandProducts = getSortedProducts(finallyFiltered);
         return (
           <div className="mt-32 w-full cursor-none">
-            <div className="flex justify-between items-center mb-4 cursor-none">
+            {/* mb-4를 mb-8로 변경하여 제목과 아래 메뉴의 간격을 STYLING Q&A와 동일하게 맞춤 */}
+            <div className="flex justify-between items-center mb-8 cursor-none">
               <h2 className="text-5xl font-bold tracking-tighter cursor-none">{selectedBrand}</h2>
               <button 
                 onClick={(e) => toggleFavoriteBrand(e, selectedBrand)}
@@ -517,15 +518,31 @@ export default function App() {
             <h2 className="text-5xl font-bold tracking-tighter mb-8 cursor-none">{selectedCategory}</h2>
             <div className="flex justify-between items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] cursor-none">
               <div className="flex gap-6 text-sm font-semibold text-gray-400 cursor-none">
-                {selectedCategory !== 'All' && currentSubCats.length > 0 && currentSubCats.map(sub => (
-                  <button 
-                    key={sub} 
-                    onClick={() => setSelectedSubCategory(sub)} 
-                    className={`${selectedSubCategory === sub ? 'text-black' : 'hover:text-black'} transition cursor-none outline-none`}
-                  >
-                    {sub}
-                  </button>
-                ))}
+                {/* Product -> All 화면일 때 카테고리(Outer, Top 등) 메뉴 표시 */}
+                {selectedCategory === 'All' ? (
+                  <>
+                    <button onClick={() => setSelectedCategory('All')} className="text-black transition cursor-none outline-none">All</button>
+                    {categories.slice(1).map(cat => (
+                      <button 
+                        key={cat} 
+                        onClick={() => { setSelectedCategory(cat); setSelectedSubCategory('All'); }} 
+                        className="hover:text-black transition cursor-none outline-none"
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </>
+                ) : (
+                  currentSubCats.length > 0 && currentSubCats.map(sub => (
+                    <button 
+                      key={sub} 
+                      onClick={() => setSelectedSubCategory(sub)} 
+                      className={`${selectedSubCategory === sub ? 'text-black' : 'hover:text-black'} transition cursor-none outline-none`}
+                    >
+                      {sub}
+                    </button>
+                  ))
+                )}
               </div>
               {renderSortDropdown()}
             </div>
