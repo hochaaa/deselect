@@ -1,16 +1,15 @@
-# React + Vite
+# DE:SELECT
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+WE SELECT, YOU EXPERIENCE.
+오직 제품에만 집중하는 큐레이션 플랫폼 DE:SELECT입니다.
 
-Currently, two official plugins are available:
+## 기술 스택
+- **Frontend:** React, Vite, Tailwind CSS, Lucide React
+- **Backend:** Supabase (Auth, Database)
+- **Deployment:** Vercel
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 주요 기능
+- 브랜드 및 카테고리별 제품 큐레이션
+- 스타일링 Q&A 게시판 (운영자 답변 및 관리 기능)
+- 실시간 제품 검색 및 필터링
+- 위시리스트 및 마이페이지
