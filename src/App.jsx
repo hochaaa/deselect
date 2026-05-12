@@ -381,7 +381,6 @@ export default function App() {
   );
 
   const renderProductGrid = (items) => (
-    // 💡 [수정] 모바일에서는 grid-cols-2 (2열), PC에서는 grid-cols-3 (3열) / 간격도 모바일에서는 gap-4로 축소
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mt-12">
       {items.map((item) => (
         <a 
@@ -959,7 +958,6 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white text-black font-sans flex select-none overflow-hidden md:cursor-none">
       
-      {/* 💡 [수정] 모바일 전용 햄버거 헤더 (돋보기 버튼 누르면 검색창으로 변신!) */}
       <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md border-b border-gray-100 z-[90] flex items-center justify-between px-6">
         {!isSearchOpen ? (
           <>
@@ -1013,7 +1011,7 @@ export default function App() {
             
             <div className="mb-8 md:mb-10 text-left md:cursor-none">
               <h3 className="text-2xl md:text-3xl font-bold tracking-tighter leading-snug md:cursor-none">
-                {authMode === 'login' ? 'LOGIN' : 'JOIN US'}
+                LOGIN / JOIN
               </h3>
             </div>
 
@@ -1176,15 +1174,21 @@ export default function App() {
         <div className="md:hidden fixed inset-0 bg-black/20 z-[95] backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
-      <aside className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-100 p-8 md:p-10 flex flex-col justify-between z-[100] transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:cursor-none`}>
-        <div className="md:cursor-none">
-          <div className="flex justify-between items-center mb-16 md:cursor-none">
+      {/* 💡 [수정] 사이드바 내부 구조 개편: 메뉴를 스크롤 영역에 넣고, 하단 버튼은 고정하여 겹침 방지 */}
+      <aside className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-100 p-8 md:p-10 flex flex-col z-[100] transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:cursor-none`}>
+        
+        {/* 상단 로고 및 닫기 버튼 */}
+        <div className="md:cursor-none shrink-0">
+          <div className="flex justify-between items-center mb-12 md:cursor-none">
             <h1 onClick={() => { setCurrentView('home'); setIsProductMenuOpen(false); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} className="text-3xl font-bold tracking-tight md:cursor-none hover:text-gray-400 transition outline-none">DE:SELECT</h1>
             <button className="md:hidden outline-none p-2 -mr-2" onClick={() => setIsMobileMenuOpen(false)}>
               <X className="w-5 h-5" />
             </button>
           </div>
-          
+        </div>
+        
+        {/* 💡 [핵심] 스크롤되는 메뉴 영역 */}
+        <div className="flex-1 overflow-y-auto flex flex-col justify-between pb-4">
           <nav className="flex flex-col gap-5 md:gap-4 font-semibold text-lg tracking-tight md:cursor-none">
             <button onClick={() => { setCurrentView('brands'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'brands' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Brands</button>
             <div className="md:cursor-none">
@@ -1210,28 +1214,48 @@ export default function App() {
             </div>
             <button onClick={() => { setCurrentView('about'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'about' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>About Us</button>
             <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left transition outline-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>STYLING Q&A</button>
-            
-            <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-gray-100 md:cursor-none">
-              <button 
-                onClick={() => { 
-                  if (!currentUser) {
-                    alert("로그인이 필요한 기능입니다.");
-                    setIsAuthModalOpen(true);
-                    return;
-                  }
-                  setCurrentView('mypage'); 
-                  setIsProductMenuOpen(false); 
-                  setIsMobileMenuOpen(false);
-                }} 
-                className={`text-left md:cursor-none transition outline-none ${currentView === 'mypage' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}
-              >
-                My Page
-              </button>
-            </div>
           </nav>
+
+          {/* 하단 마이페이지 및 모바일 로그인/로그아웃 버튼 (Product 메뉴가 열려도 같이 밀려 내려가므로 안 겹침!) */}
+          <div className="flex flex-col gap-4 mt-8 pt-4 border-t border-gray-100 md:cursor-none shrink-0">
+            <button 
+              onClick={() => { 
+                if (!currentUser) {
+                  alert("로그인이 필요한 기능입니다.");
+                  setIsAuthModalOpen(true);
+                  return;
+                }
+                setCurrentView('mypage'); 
+                setIsProductMenuOpen(false); 
+                setIsMobileMenuOpen(false);
+              }} 
+              className={`font-semibold text-lg tracking-tight text-left md:cursor-none transition outline-none ${currentView === 'mypage' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}
+            >
+              My Page
+            </button>
+            
+            <div className="md:hidden mt-2 flex flex-col items-start">
+              {currentUser ? (
+                 <button 
+                   onClick={() => { setIsLogoutModalOpen(true); setIsMobileMenuOpen(false); }}
+                   className="font-bold text-xs text-gray-400 border-b border-gray-400 pb-0.5 uppercase tracking-widest outline-none transition-colors"
+                 >
+                   LOGOUT
+                 </button>
+              ) : (
+                 <button 
+                   onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
+                   className="font-bold text-xs text-black border-b border-black pb-0.5 uppercase tracking-widest outline-none transition-colors"
+                 >
+                   LOGIN / JOIN
+                 </button>
+              )}
+            </div>
+          </div>
         </div>
         
-        <div className="hidden md:flex items-center gap-3 md:cursor-none">
+        {/* 데스크탑에서만 보이는 왼쪽 하단 검색창 */}
+        <div className="hidden md:flex items-center gap-3 md:cursor-none shrink-0 pt-8">
           <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="outline-none md:cursor-none">
             <Search className="w-5 h-5 md:cursor-none text-black hover:text-gray-400 transition outline-none" />
           </button>
@@ -1252,16 +1276,16 @@ export default function App() {
 
       <main ref={mainRef} className="md:ml-64 w-full h-screen overflow-y-auto flex flex-col p-6 pt-24 md:p-10 relative scroll-smooth md:cursor-none">
         
-        {/* 💡 [수정] PC 우측 상단 로그인/로그아웃 버튼 사이즈, 여백, 밑줄 완벽 통일 */}
+        {/* 💡 [수정] PC 우측 상단 로그인/로그아웃 버튼 사이즈(text-xs), 여백(pb-0.5) 완벽 통일 */}
         <div className="hidden md:block">
           {currentUser ? (
             <div className="absolute top-10 right-10 z-40 flex flex-col items-end gap-1 md:cursor-none">
-              <span className="font-bold text-sm tracking-tight text-black md:cursor-none">
+              <span className="font-bold text-xs tracking-tight text-black md:cursor-none">
                 {currentUser.user_metadata?.name || 'Guest'} 님
               </span>
               <button 
                 onClick={() => setIsLogoutModalOpen(true)}
-                className="font-bold text-sm tracking-tight cursor-none text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none uppercase"
+                className="font-bold text-xs tracking-tight text-gray-400 hover:text-black transition border-b border-gray-400 hover:border-black pb-0.5 outline-none uppercase md:cursor-none"
               >
                 LOGOUT
               </button>
@@ -1269,36 +1293,18 @@ export default function App() {
           ) : (
             <button 
               onClick={() => setIsAuthModalOpen(true)}
-              className="absolute top-10 right-10 font-bold text-sm z-50 tracking-tight cursor-none text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none"
+              className="absolute top-10 right-10 font-bold text-xs z-50 tracking-tight text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-0.5 outline-none uppercase md:cursor-none"
             >
               LOGIN / JOIN
             </button>
           )}
         </div>
-
-        <div className="md:hidden">
-            {currentUser ? (
-               <button 
-                 onClick={() => { setIsLogoutModalOpen(true); setIsMobileMenuOpen(false); }}
-                 className={`fixed bottom-10 left-8 z-[110] font-bold text-sm border-b border-gray-400 pb-1 text-gray-400 uppercase tracking-widest transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[200%]'}`}
-               >
-                 LOGOUT
-               </button>
-            ) : (
-               <button 
-                 onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
-                 className={`fixed bottom-10 left-8 z-[110] font-bold text-sm border-b border-gray-400 pb-1 text-gray-400 uppercase tracking-widest transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[200%]'}`}
-               >
-                 LOGIN / JOIN
-               </button>
-            )}
-        </div>
         
         <div className="flex-1 md:cursor-none">{renderContent()}</div>
         
-        {/* 💡 [수정] Footer 하단 쓸데없는 내용 삭제 & 모바일 왼쪽 정렬 */}
-        <footer className="mt-32 pt-8 border-t border-black flex flex-col justify-between items-start md:items-end pb-12 md:cursor-none">
-          <div className="mb-6 md:mb-0 md:cursor-none text-left">
+        {/* 💡 [수정] Footer 하단 쓸데없는 내용 완전 삭제 & PC/모바일 모두 왼쪽 정렬로 통일 */}
+        <footer className="mt-32 pt-8 border-t border-black flex pb-12 md:cursor-none">
+          <div className="text-left md:cursor-none">
             <p className="text-xl font-bold tracking-tighter text-black mb-1 md:cursor-none">DE:SELECT</p>
             <p className="text-xs text-gray-500 font-medium tracking-tight md:cursor-none">The New Standard of Curation.</p>
           </div>
