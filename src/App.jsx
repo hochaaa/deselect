@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-// 💡 [수정] 모바일용 햄버거 메뉴(Menu) 아이콘 추가
 import { Search, User, Heart, Star, X, Eye, EyeOff, MessageSquare, Menu } from 'lucide-react';
 import { supabase } from './supabase';
 
@@ -34,22 +33,12 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
   
-  const [likedProductIds, setLikedProductIds] = useState(() => {
-    const saved = sessionStorage.getItem('likedProductIds');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [favoriteBrands, setFavoriteBrands] = useState(() => {
-    const saved = sessionStorage.getItem('favoriteBrands');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [likedProductIds, setLikedProductIds] = useState([]);
+  const [favoriteBrands, setFavoriteBrands] = useState([]);
+  const [qnaList, setQnaList] = useState([]);
 
   const [sortOption, setSortOption] = useState(() => sessionStorage.getItem('sortOption') || 'newest');
 
-  const [qnaList, setQnaList] = useState(() => {
-    const saved = sessionStorage.getItem('qnaList');
-    return saved ? JSON.parse(saved) : [];
-  });
   const [qnaForm, setQnaForm] = useState({ productId: '', title: '', content: '' });
   const [selectedQna, setSelectedQna] = useState(null);
   const [adminReply, setAdminReply] = useState('');
@@ -72,7 +61,6 @@ export default function App() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // 💡 [추가] 모바일 사이드바 열림/닫힘 상태
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isAdmin = currentUser?.email === 'hochan228@naver.com';
@@ -80,22 +68,38 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setCurrentUser(session?.user ?? null);
-      if (!session?.user) {
-        setLikedProductIds([]); 
-        setFavoriteBrands([]); 
-      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setCurrentUser(session?.user ?? null);
-      if (!session?.user) {
-        setLikedProductIds([]); 
-        setFavoriteBrands([]); 
-      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      async function fetchUserPrefs() {
+        const { data, error } = await supabase
+          .from('user_preferences')
+          .select('*')
+          .eq('email', currentUser.email)
+          .maybeSingle();
+
+        if (data && !error) {
+          setLikedProductIds(data.liked_products || []);
+          setFavoriteBrands(data.favorite_brands || []);
+        } else {
+          setLikedProductIds([]);
+          setFavoriteBrands([]);
+        }
+      }
+      fetchUserPrefs();
+    } else {
+      setLikedProductIds([]);
+      setFavoriteBrands([]);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (mainRef.current) {
@@ -110,11 +114,8 @@ export default function App() {
     sessionStorage.setItem('selectedCategory', selectedCategory);
     sessionStorage.setItem('selectedSubCategory', selectedSubCategory);
     sessionStorage.setItem('searchedProducts', JSON.stringify(searchedProducts));
-    sessionStorage.setItem('likedProductIds', JSON.stringify(likedProductIds));
-    sessionStorage.setItem('favoriteBrands', JSON.stringify(favoriteBrands)); 
     sessionStorage.setItem('sortOption', sortOption);
-    sessionStorage.setItem('qnaList', JSON.stringify(qnaList)); 
-  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, likedProductIds, favoriteBrands, sortOption, qnaList]);
+  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, sortOption]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -127,31 +128,32 @@ export default function App() {
   }, [isModalOpen, isAuthModalOpen, isLogoutModalOpen]);
 
   useEffect(() => {
-    async function fetchProducts() {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
+    async function fetchData() {
+      const [productsRes, qnaRes] = await Promise.all([
+        supabase.from('products').select('*').order('created_at', { ascending: false }),
+        supabase.from('qna').select('*').order('created_at', { ascending: false })
+      ]);
 
-      if (error) {
-        console.error("데이터를 가져오는 중 에러 발생:", error);
-      } else {
-        setProducts(data);
-        
-        const brands = [...new Set(data.map(p => p.brand))].sort((a, b) => {
+      if (!productsRes.error) {
+        setProducts(productsRes.data);
+        const brands = [...new Set(productsRes.data.map(p => p.brand))].sort((a, b) => {
           const isANumber = /^[0-9]/.test(a);
           const isBNumber = /^[0-9]/.test(b);
           if (isANumber && !isBNumber) return 1;
           if (!isANumber && isBNumber) return -1;
           return a.localeCompare(b);
         });
-        
         setAvailableBrands(brands);
       }
+      
+      if (!qnaRes.error) {
+        setQnaList(qnaRes.data);
+      }
+      
       setIsLoading(false);
     }
     
-    fetchProducts();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -159,6 +161,18 @@ export default function App() {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  const savePreferencesToDB = async (newProducts, newBrands) => {
+    if (!currentUser) return;
+    
+    const { data } = await supabase.from('user_preferences').select('id').eq('email', currentUser.email).maybeSingle();
+    
+    if (data) {
+      await supabase.from('user_preferences').update({ liked_products: newProducts, favorite_brands: newBrands }).eq('id', data.id);
+    } else {
+      await supabase.from('user_preferences').insert([{ email: currentUser.email, liked_products: newProducts, favorite_brands: newBrands }]);
+    }
+  };
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
@@ -211,10 +225,6 @@ export default function App() {
 
   const confirmLogout = async () => {
     await supabase.auth.signOut();
-    setLikedProductIds([]); 
-    setFavoriteBrands([]); 
-    sessionStorage.removeItem('likedProductIds'); 
-    sessionStorage.removeItem('favoriteBrands');
     setIsLogoutModalOpen(false); 
     setCurrentView('home');
   };
@@ -231,7 +241,7 @@ export default function App() {
       setCurrentView('brandDetail');
       setIsSearchOpen(false);
       setSearchQuery('');
-      setIsMobileMenuOpen(false); // 모바일에서 검색 시 메뉴 닫기
+      setIsMobileMenuOpen(false); 
       return;
     }
 
@@ -244,7 +254,7 @@ export default function App() {
     setCurrentView('search');
     setIsSearchOpen(false);
     setSearchQuery('');
-    setIsMobileMenuOpen(false); // 모바일에서 검색 시 메뉴 닫기
+    setIsMobileMenuOpen(false); 
   };
 
   const handleProductClick = (e, link) => {
@@ -253,7 +263,7 @@ export default function App() {
     setIsModalOpen(true);
   };
 
-  const toggleLike = (e, productId) => {
+  const toggleLike = async (e, productId) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -263,13 +273,15 @@ export default function App() {
       return;
     }
     
-    setLikedProductIds(prev => {
-      if (prev.includes(productId)) return prev.filter(id => id !== productId);
-      else return [...prev, productId];
-    });
+    const newLikedProducts = likedProductIds.includes(productId) 
+      ? likedProductIds.filter(id => id !== productId)
+      : [...likedProductIds, productId];
+
+    setLikedProductIds(newLikedProducts);
+    await savePreferencesToDB(newLikedProducts, favoriteBrands);
   };
 
-  const toggleFavoriteBrand = (e, brandName) => {
+  const toggleFavoriteBrand = async (e, brandName) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -279,56 +291,66 @@ export default function App() {
       return;
     }
 
-    setFavoriteBrands(prev => {
-      if (prev.includes(brandName)) return prev.filter(b => b !== brandName);
-      else return [...prev, brandName];
-    });
+    const newFavoriteBrands = favoriteBrands.includes(brandName)
+      ? favoriteBrands.filter(b => b !== brandName)
+      : [...favoriteBrands, brandName];
+
+    setFavoriteBrands(newFavoriteBrands);
+    await savePreferencesToDB(likedProductIds, newFavoriteBrands);
   };
 
-  const handleQnaSubmit = (e) => {
+  const handleQnaSubmit = async (e) => {
     e.preventDefault();
     if (!qnaForm.productId) return alert("스타일링이 궁금한 제품을 선택해주세요.");
     if (!qnaForm.title.trim() || !qnaForm.content.trim()) return alert("제목과 내용을 모두 입력해주세요.");
 
-    const newQna = {
-      id: Date.now(),
+    const newQnaData = {
       author: currentUser.user_metadata?.name || 'Guest',
       email: currentUser.email,
-      productId: qnaForm.productId,
+      product_id: qnaForm.productId,
       title: qnaForm.title,
       content: qnaForm.content,
-      reply: null,
-      createdAt: new Date().toLocaleDateString()
     };
 
-    setQnaList([newQna, ...qnaList]);
-    setQnaForm({ productId: '', title: '', content: '' });
-    setQnaProductSearch('');
-    setCurrentView('customer');
+    const { data, error } = await supabase.from('qna').insert([newQnaData]).select();
+
+    if (!error && data) {
+      setQnaList([data[0], ...qnaList]);
+      setQnaForm({ productId: '', title: '', content: '' });
+      setQnaProductSearch('');
+      setCurrentView('customer');
+    } else {
+      alert("문의 등록 중 오류가 발생했습니다.");
+    }
   };
 
-  const handleAdminReply = (e) => {
+  const handleAdminReply = async (e) => {
     e.preventDefault();
     if (!adminReply.trim()) return;
 
-    setQnaList(qnaList.map(q => q.id === selectedQna.id ? { ...q, reply: adminReply } : q));
-    setSelectedQna({ ...selectedQna, reply: adminReply });
-    setAdminReply('');
-    setIsEditingReply(false); 
+    const { error } = await supabase.from('qna').update({ reply: adminReply }).eq('id', selectedQna.id);
+    
+    if (!error) {
+      setQnaList(qnaList.map(q => q.id === selectedQna.id ? { ...q, reply: adminReply } : q));
+      setSelectedQna({ ...selectedQna, reply: adminReply });
+      setAdminReply('');
+      setIsEditingReply(false); 
+    }
   };
 
-  const handleDeleteQna = (id) => {
+  const handleDeleteQna = async (id) => {
     if(window.confirm("이 문의글을 완전히 삭제하시겠습니까?")) {
-      const newList = qnaList.filter(q => q.id !== id);
-      setQnaList(newList);
+      await supabase.from('qna').delete().eq('id', id);
+      setQnaList(qnaList.filter(q => q.id !== id));
       setSelectedQna(null);
       setCurrentView('customer');
     }
   };
 
-  const handleDeleteReply = (e) => {
+  const handleDeleteReply = async (e) => {
     e.preventDefault();
     if(window.confirm("이 답변을 삭제하시겠습니까?")) {
+      await supabase.from('qna').update({ reply: null }).eq('id', selectedQna.id);
       setQnaList(qnaList.map(q => q.id === selectedQna.id ? { ...q, reply: null } : q));
       setSelectedQna({ ...selectedQna, reply: null });
       setIsEditingReply(false);
@@ -359,7 +381,8 @@ export default function App() {
   );
 
   const renderProductGrid = (items) => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+    // 💡 [수정] 모바일에서는 grid-cols-2 (2열), PC에서는 grid-cols-3 (3열) / 간격도 모바일에서는 gap-4로 축소
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mt-12">
       {items.map((item) => (
         <a 
           key={item.id} 
@@ -636,7 +659,7 @@ export default function App() {
               <>
                 <ul className="flex flex-col gap-6 text-2xl md:text-4xl font-medium tracking-tighter mt-8 md:cursor-none">
                   {favoriteBrands.map(brand => (
-                    <li key={brand} className="flex items-center justify-between group border-b border-gray-50 pb-6 md:cursor-none">
+                    <li key={brand} className="flex items-center gap-5 group border-b border-gray-50 pb-6 md:cursor-none">
                       <button 
                         onClick={() => { setSelectedBrand(brand); setSelectedCategory('All'); setCurrentView('brandDetail'); }} 
                         className="hover:text-gray-400 transition md:cursor-none text-left outline-none"
@@ -645,7 +668,7 @@ export default function App() {
                       </button>
                       <button 
                         onClick={(e) => toggleFavoriteBrand(e, brand)}
-                        className="outline-none md:cursor-none"
+                        className="outline-none md:cursor-none flex items-center justify-center"
                       >
                         <Heart strokeWidth={1.5} className="w-6 h-6 fill-black text-black hover:scale-125 transition-transform md:cursor-none" />
                       </button>
@@ -692,7 +715,7 @@ export default function App() {
 
             <div className="flex flex-col md:cursor-none">
               {qnaList.map(qna => {
-                const product = products.find(p => p.id === qna.productId); 
+                const product = products.find(p => p.id === qna.product_id); 
                 return (
                   <button 
                     key={qna.id} 
@@ -714,7 +737,7 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-6 text-sm text-gray-400 font-medium min-w-fit md:cursor-none">
                       <span className="md:cursor-none">{qna.author}</span>
-                      <span className="md:cursor-none">{qna.createdAt}</span>
+                      <span className="md:cursor-none">{new Date(qna.created_at).toLocaleDateString()}</span>
                     </div>
                   </button>
                 );
@@ -818,7 +841,7 @@ export default function App() {
 
       case 'qnaDetail':
         if (!selectedQna) return null;
-        const qnaProduct = products.find(p => p.id === selectedQna.productId); 
+        const qnaProduct = products.find(p => p.id === selectedQna.product_id); 
 
         return (
           <div className="mt-32 w-full max-w-4xl mx-auto md:cursor-none">
@@ -849,7 +872,7 @@ export default function App() {
             <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-8 md:cursor-none">
               <div className="flex gap-6 text-sm font-medium text-gray-500 md:cursor-none">
                 <span className="md:cursor-none">{selectedQna.author}</span>
-                <span className="md:cursor-none">{selectedQna.createdAt}</span>
+                <span className="md:cursor-none">{new Date(selectedQna.created_at).toLocaleDateString()}</span>
               </div>
             </div>
 
@@ -936,22 +959,40 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white text-black font-sans flex select-none overflow-hidden md:cursor-none">
       
-      {/* 💡 [추가] 모바일 전용 햄버거 헤더 */}
+      {/* 💡 [수정] 모바일 전용 햄버거 헤더 (돋보기 버튼 누르면 검색창으로 변신!) */}
       <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md border-b border-gray-100 z-[90] flex items-center justify-between px-6">
-        <button onClick={() => setIsMobileMenuOpen(true)} className="outline-none p-2 -ml-2">
-          <Menu className="w-6 h-6" />
-        </button>
-        <h1 
-          onClick={() => { setCurrentView('home'); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} 
-          className="text-xl font-bold tracking-tight outline-none"
-        >
-          DE:SELECT
-        </h1>
-        <div className="flex items-center gap-4">
-          <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="outline-none p-2">
-            <Search className="w-5 h-5 text-black" />
-          </button>
-        </div>
+        {!isSearchOpen ? (
+          <>
+            <button onClick={() => setIsMobileMenuOpen(true)} className="outline-none p-2 -ml-2">
+              <Menu className="w-6 h-6" />
+            </button>
+            <h1 
+              onClick={() => { setCurrentView('home'); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} 
+              className="text-xl font-bold tracking-tight outline-none"
+            >
+              DE:SELECT
+            </h1>
+            <button onClick={() => setIsSearchOpen(true)} className="outline-none p-2 -mr-2">
+              <Search className="w-5 h-5 text-black" />
+            </button>
+          </>
+        ) : (
+          <div className="flex items-center w-full gap-3">
+            <form onSubmit={handleSearch} className="flex-1">
+              <input 
+                type="text" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search..."
+                className="w-full border-b border-black outline-none bg-transparent text-sm pb-1 font-medium focus:outline-none select-text"
+                autoFocus
+              />
+            </form>
+            <button onClick={() => setIsSearchOpen(false)} className="outline-none p-2 -mr-2">
+              <X className="w-5 h-5 text-black" />
+            </button>
+          </div>
+        )}
       </div>
 
       {isAuthModalOpen && (
@@ -1128,21 +1169,17 @@ export default function App() {
         </div>
       )}
 
-      {/* 💡 [추가] 모바일 환경(터치스크린)에서는 커스텀 커서 숨김 (hidden md:block) */}
       <div className="hidden md:block fixed top-0 left-0 w-2 h-2 bg-white rounded-full z-[9999] pointer-events-none mix-blend-difference md:cursor-none" style={{ transform: `translate(${mousePos.x - 4}px, ${mousePos.y - 4}px)` }} />
       <div className="hidden md:block fixed top-0 left-0 w-8 h-8 bg-white rounded-full z-[9998] pointer-events-none mix-blend-difference transition-transform duration-150 ease-out md:cursor-none" style={{ transform: `translate(${mousePos.x - 16}px, ${mousePos.y - 16}px)` }} />
 
-      {/* 💡 [추가] 모바일 햄버거 메뉴 열림 시 어두운 배경 */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 bg-black/20 z-[95] backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
-      {/* 💡 [수정] 모바일에서는 왼쪽에서 스르륵 나오는 메뉴로 변경 (translate-x) */}
       <aside className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-100 p-8 md:p-10 flex flex-col justify-between z-[100] transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:cursor-none`}>
         <div className="md:cursor-none">
           <div className="flex justify-between items-center mb-16 md:cursor-none">
             <h1 onClick={() => { setCurrentView('home'); setIsProductMenuOpen(false); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} className="text-3xl font-bold tracking-tight md:cursor-none hover:text-gray-400 transition outline-none">DE:SELECT</h1>
-            {/* 모바일 닫기 버튼 */}
             <button className="md:hidden outline-none p-2 -mr-2" onClick={() => setIsMobileMenuOpen(false)}>
               <X className="w-5 h-5" />
             </button>
@@ -1194,7 +1231,6 @@ export default function App() {
           </nav>
         </div>
         
-        {/* 데스크탑에서만 보이는 왼쪽 하단 검색창 (모바일은 상단 헤더에 있음) */}
         <div className="hidden md:flex items-center gap-3 md:cursor-none">
           <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="outline-none md:cursor-none">
             <Search className="w-5 h-5 md:cursor-none text-black hover:text-gray-400 transition outline-none" />
@@ -1214,10 +1250,9 @@ export default function App() {
         </div>
       </aside>
 
-      {/* 💡 [수정] 모바일 화면의 상단 여백(pt-24) 확보 및 데스크탑 여백 분리 */}
       <main ref={mainRef} className="md:ml-64 w-full h-screen overflow-y-auto flex flex-col p-6 pt-24 md:p-10 relative scroll-smooth md:cursor-none">
         
-        {/* 데스크탑용 우측 상단 로그인 버튼 (모바일에서는 햄버거 메뉴 안에 포함됨) */}
+        {/* 💡 [수정] PC 우측 상단 로그인/로그아웃 버튼 사이즈, 여백, 밑줄 완벽 통일 */}
         <div className="hidden md:block">
           {currentUser ? (
             <div className="absolute top-10 right-10 z-40 flex flex-col items-end gap-1 md:cursor-none">
@@ -1226,7 +1261,7 @@ export default function App() {
               </span>
               <button 
                 onClick={() => setIsLogoutModalOpen(true)}
-                className="font-bold text-xs tracking-tight text-gray-400 hover:text-black transition border-b border-transparent hover:border-black pb-0.5 outline-none uppercase md:cursor-none"
+                className="font-bold text-sm tracking-tight cursor-none text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none uppercase"
               >
                 LOGOUT
               </button>
@@ -1234,26 +1269,25 @@ export default function App() {
           ) : (
             <button 
               onClick={() => setIsAuthModalOpen(true)}
-              className="absolute top-10 right-10 font-bold text-sm z-40 tracking-tight text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none uppercase md:cursor-none"
+              className="absolute top-10 right-10 font-bold text-sm z-50 tracking-tight cursor-none text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none"
             >
               LOGIN / JOIN
             </button>
           )}
         </div>
 
-        {/* 💡 [추가] 모바일 메뉴 하단에 모바일 전용 로그아웃 버튼 배치 */}
         <div className="md:hidden">
             {currentUser ? (
                <button 
                  onClick={() => { setIsLogoutModalOpen(true); setIsMobileMenuOpen(false); }}
-                 className={`fixed bottom-10 left-8 z-[110] font-bold text-xs text-gray-400 uppercase tracking-widest transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[200%]'}`}
+                 className={`fixed bottom-10 left-8 z-[110] font-bold text-sm border-b border-gray-400 pb-1 text-gray-400 uppercase tracking-widest transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[200%]'}`}
                >
                  LOGOUT
                </button>
             ) : (
                <button 
                  onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
-                 className={`fixed bottom-10 left-8 z-[110] font-bold text-xs text-gray-400 uppercase tracking-widest transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[200%]'}`}
+                 className={`fixed bottom-10 left-8 z-[110] font-bold text-sm border-b border-gray-400 pb-1 text-gray-400 uppercase tracking-widest transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[200%]'}`}
                >
                  LOGIN / JOIN
                </button>
@@ -1262,18 +1296,11 @@ export default function App() {
         
         <div className="flex-1 md:cursor-none">{renderContent()}</div>
         
-        <footer className="mt-32 pt-8 border-t border-black flex flex-col md:flex-row justify-between items-end pb-12 md:cursor-none">
-          <div className="mb-6 md:mb-0 md:cursor-none">
+        {/* 💡 [수정] Footer 하단 쓸데없는 내용 삭제 & 모바일 왼쪽 정렬 */}
+        <footer className="mt-32 pt-8 border-t border-black flex flex-col justify-between items-start md:items-end pb-12 md:cursor-none">
+          <div className="mb-6 md:mb-0 md:cursor-none text-left">
             <p className="text-xl font-bold tracking-tighter text-black mb-1 md:cursor-none">DE:SELECT</p>
             <p className="text-xs text-gray-500 font-medium tracking-tight md:cursor-none">The New Standard of Curation.</p>
-          </div>
-          
-          <div className="flex items-center gap-6 text-xs font-mono uppercase tracking-widest text-gray-400 md:cursor-none">
-            <button className="hover:text-black transition md:cursor-none outline-none">INSTAGRAM</button>
-            <span className="md:cursor-none">/</span>
-            <button className="hover:text-black transition md:cursor-none outline-none">TERMS</button>
-            <span className="md:cursor-none">/</span>
-            <span className="md:cursor-none">© 2026</span>
           </div>
         </footer>
       </main>
