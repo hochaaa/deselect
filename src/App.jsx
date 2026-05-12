@@ -364,10 +364,24 @@ export default function App() {
     });
   };
 
+  // 💡 [수정] 브랜드 정렬 로직 완벽 반영 (숫자는 A-Z일때 하단, Z-A일때 상단)
   const getSortedBrands = (items) => {
     return [...items].sort((a, b) => {
-      if (brandSortOption === 'A-Z') return a.localeCompare(b);
-      if (brandSortOption === 'Z-A') return b.localeCompare(a);
+      const isANumber = /^[0-9]/.test(a);
+      const isBNumber = /^[0-9]/.test(b);
+
+      if (brandSortOption === 'A-Z') {
+        if (isANumber && !isBNumber) return 1;
+        if (!isANumber && isBNumber) return -1;
+        return a.localeCompare(b);
+      }
+      
+      if (brandSortOption === 'Z-A') {
+        if (isANumber && !isBNumber) return -1;
+        if (!isANumber && isBNumber) return 1;
+        return b.localeCompare(a);
+      }
+      
       return 0;
     });
   };
@@ -478,12 +492,12 @@ export default function App() {
       case 'about':
         return (
           <div className="mt-32 w-full md:cursor-none">
-            {/* 모든 화면에서 mb-5 간격 및 min-h-[2.5rem] 등 완벽한 동기화 */}
             <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">About Us</h2>
             </div>
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="md:cursor-none">
+                {/* 💡 [수정] 호찬 님의 요청대로 심플하게 수정 완료! */}
                 <p className="text-sm text-gray-500 font-medium md:cursor-none break-keep">DE:SELECT</p>
               </div>
             </div>
@@ -512,7 +526,6 @@ export default function App() {
             </div>
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="hidden md:block md:cursor-none">
-                {/* 완벽한 높이 동기화를 위한 투명 텍스트 */}
                 <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
               </div>
               <div className="w-full md:w-auto flex justify-start md:justify-end mt-4 md:mt-0">
@@ -737,6 +750,7 @@ export default function App() {
           <div className="mt-32 w-full md:cursor-none">
             <div className="flex justify-between items-center mb-5 md:cursor-none">
               <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">STYLING Q&A</h2>
+              <div></div>
             </div>
 
             <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
