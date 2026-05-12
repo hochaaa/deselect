@@ -1219,7 +1219,7 @@ export default function App() {
             onClick={() => setIsAuthModalOpen(true)}
             className="absolute top-10 right-10 font-bold text-sm z-50 tracking-tight cursor-none text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-1 outline-none"
           >
-            Please Login.
+            LOGIN / JOIN
           </button>
         )}
         
