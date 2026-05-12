@@ -323,7 +323,7 @@ export default function App() {
       setQnaProductSearch('');
       setCurrentView('customer');
     } else {
-      alert("문의 등록 중 오류가 발생했습니다.");
+      alert("오류 상세 원인: " + error.message);
     }
   };
 
