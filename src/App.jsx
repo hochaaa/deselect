@@ -661,9 +661,15 @@ export default function App() {
       case 'customer':
         return (
           <div className="mt-32 w-full cursor-none">
-            {/* mb-8을 mb-4로 줄여 제목과 설명글 사이 간격을 ASP 화면과 동일하게 맞춤 */}
-            <h2 className="text-5xl font-bold tracking-tighter mb-4 cursor-none">STYLING Q&A</h2>
-            <div className="flex justify-between items-center border-b border-gray-200 pb-4 mb-8 cursor-none">
+            {/* 1. 제목 줄 (ASP 제목 줄 구조 복제: mb-4, items-center) */}
+            <div className="flex justify-between items-center mb-4 cursor-none">
+              <h2 className="text-5xl font-bold tracking-tighter cursor-none">STYLING Q&A</h2>
+              {/* 우측 공간 비워둠 */}
+              <div></div>
+            </div>
+            
+            {/* 2. 설명글 + WRITE 버튼 줄 (ASP 메뉴 줄 구조 복제: items-end, border-b, pb-4, mb-8) */}
+            <div className="flex justify-between items-end border-b border-gray-200 pb-4 mb-8 cursor-none">
               <div className="cursor-none">
                 <p className="text-sm text-gray-500 font-medium cursor-none">DE:SELECT 큐레이션 제품에 대한 스타일링 팁을 제안해 드립니다.</p>
               </div>
@@ -1080,17 +1086,6 @@ export default function App() {
             </div>
             
             <div className="flex flex-col gap-3 cursor-none">
-              <button 
-                onClick={() => {
-                  window.open(targetLink, '_blank', 'noopener,noreferrer');
-                  setIsModalOpen(false);
-                }} 
-                className="w-full py-4 bg-black text-white text-sm font-bold tracking-widest hover:scale-105 hover:shadow-lg transition-all duration-300 flex justify-between items-center px-6 cursor-none outline-none"
-              >
-                <span className="cursor-none">CONTINUE</span>
-                <span className="cursor-none">→</span>
-              </button>
-              
               <button 
                 onClick={() => {
                   window.open(targetLink, '_blank', 'noopener,noreferrer');
