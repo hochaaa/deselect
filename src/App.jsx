@@ -33,22 +33,13 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
   
-  const [likedProductIds, setLikedProductIds] = useState(() => {
-    const saved = sessionStorage.getItem('likedProductIds');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [favoriteBrands, setFavoriteBrands] = useState(() => {
-    const saved = sessionStorage.getItem('favoriteBrands');
-    return saved ? JSON.parse(saved) : [];
-  });
+  // 상태만 관리하고, 초기값은 DB에서 불러오도록 변경
+  const [likedProductIds, setLikedProductIds] = useState([]);
+  const [favoriteBrands, setFavoriteBrands] = useState([]);
+  const [qnaList, setQnaList] = useState([]);
 
   const [sortOption, setSortOption] = useState(() => sessionStorage.getItem('sortOption') || 'newest');
 
-  const [qnaList, setQnaList] = useState(() => {
-    const saved = sessionStorage.getItem('qnaList');
-    return saved ? JSON.parse(saved) : [];
-  });
   const [qnaForm, setQnaForm] = useState({ productId: '', title: '', content: '' });
   const [selectedQna, setSelectedQna] = useState(null);
   const [adminReply, setAdminReply] = useState('');
@@ -76,22 +67,39 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setCurrentUser(session?.user ?? null);
-      if (!session?.user) {
-        setLikedProductIds([]); 
-        setFavoriteBrands([]); 
-      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setCurrentUser(session?.user ?? null);
-      if (!session?.user) {
-        setLikedProductIds([]); 
-        setFavoriteBrands([]); 
-      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // ✅ 사용자가 로그인/로그아웃할 때마다 DB에서 좋아요 내역 불러오기
+  useEffect(() => {
+    if (currentUser) {
+      async function fetchUserPrefs() {
+        const { data, error } = await supabase
+          .from('user_preferences')
+          .select('*')
+          .eq('email', currentUser.email)
+          .maybeSingle();
+
+        if (data && !error) {
+          setLikedProductIds(data.liked_products || []);
+          setFavoriteBrands(data.favorite_brands || []);
+        } else {
+          setLikedProductIds([]);
+          setFavoriteBrands([]);
+        }
+      }
+      fetchUserPrefs();
+    } else {
+      setLikedProductIds([]);
+      setFavoriteBrands([]);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (mainRef.current) {
@@ -106,11 +114,8 @@ export default function App() {
     sessionStorage.setItem('selectedCategory', selectedCategory);
     sessionStorage.setItem('selectedSubCategory', selectedSubCategory);
     sessionStorage.setItem('searchedProducts', JSON.stringify(searchedProducts));
-    sessionStorage.setItem('likedProductIds', JSON.stringify(likedProductIds));
-    sessionStorage.setItem('favoriteBrands', JSON.stringify(favoriteBrands)); 
     sessionStorage.setItem('sortOption', sortOption);
-    sessionStorage.setItem('qnaList', JSON.stringify(qnaList)); 
-  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, likedProductIds, favoriteBrands, sortOption, qnaList]);
+  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, sortOption]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -122,32 +127,34 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isModalOpen, isAuthModalOpen, isLogoutModalOpen]);
 
+  // ✅ 상품 목록과 Q&A 목록을 DB에서 동시에 불러오기
   useEffect(() => {
-    async function fetchProducts() {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
+    async function fetchData() {
+      const [productsRes, qnaRes] = await Promise.all([
+        supabase.from('products').select('*').order('created_at', { ascending: false }),
+        supabase.from('qna').select('*').order('created_at', { ascending: false })
+      ]);
 
-      if (error) {
-        console.error("데이터를 가져오는 중 에러 발생:", error);
-      } else {
-        setProducts(data);
-        
-        const brands = [...new Set(data.map(p => p.brand))].sort((a, b) => {
+      if (!productsRes.error) {
+        setProducts(productsRes.data);
+        const brands = [...new Set(productsRes.data.map(p => p.brand))].sort((a, b) => {
           const isANumber = /^[0-9]/.test(a);
           const isBNumber = /^[0-9]/.test(b);
           if (isANumber && !isBNumber) return 1;
           if (!isANumber && isBNumber) return -1;
           return a.localeCompare(b);
         });
-        
         setAvailableBrands(brands);
       }
+      
+      if (!qnaRes.error) {
+        setQnaList(qnaRes.data);
+      }
+      
       setIsLoading(false);
     }
     
-    fetchProducts();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -155,6 +162,21 @@ export default function App() {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  // ✅ 좋아요 내역을 DB에 저장하는 통합 함수
+  const savePreferencesToDB = async (newProducts, newBrands) => {
+    if (!currentUser) return;
+    
+    const { data } = await supabase.from('user_preferences').select('id').eq('email', currentUser.email).maybeSingle();
+    
+    if (data) {
+      // 이미 기록이 있으면 업데이트
+      await supabase.from('user_preferences').update({ liked_products: newProducts, favorite_brands: newBrands }).eq('id', data.id);
+    } else {
+      // 첫 좋아요라면 새로 생성
+      await supabase.from('user_preferences').insert([{ email: currentUser.email, liked_products: newProducts, favorite_brands: newBrands }]);
+    }
+  };
 
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
@@ -207,10 +229,6 @@ export default function App() {
 
   const confirmLogout = async () => {
     await supabase.auth.signOut();
-    setLikedProductIds([]); 
-    setFavoriteBrands([]); 
-    sessionStorage.removeItem('likedProductIds'); 
-    sessionStorage.removeItem('favoriteBrands');
     setIsLogoutModalOpen(false); 
     setCurrentView('home');
   };
@@ -247,7 +265,7 @@ export default function App() {
     setIsModalOpen(true);
   };
 
-  const toggleLike = (e, productId) => {
+  const toggleLike = async (e, productId) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -257,13 +275,15 @@ export default function App() {
       return;
     }
     
-    setLikedProductIds(prev => {
-      if (prev.includes(productId)) return prev.filter(id => id !== productId);
-      else return [...prev, productId];
-    });
+    const newLikedProducts = likedProductIds.includes(productId) 
+      ? likedProductIds.filter(id => id !== productId)
+      : [...likedProductIds, productId];
+
+    setLikedProductIds(newLikedProducts);
+    await savePreferencesToDB(newLikedProducts, favoriteBrands);
   };
 
-  const toggleFavoriteBrand = (e, brandName) => {
+  const toggleFavoriteBrand = async (e, brandName) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -273,56 +293,70 @@ export default function App() {
       return;
     }
 
-    setFavoriteBrands(prev => {
-      if (prev.includes(brandName)) return prev.filter(b => b !== brandName);
-      else return [...prev, brandName];
-    });
+    const newFavoriteBrands = favoriteBrands.includes(brandName)
+      ? favoriteBrands.filter(b => b !== brandName)
+      : [...favoriteBrands, brandName];
+
+    setFavoriteBrands(newFavoriteBrands);
+    await savePreferencesToDB(likedProductIds, newFavoriteBrands);
   };
 
-  const handleQnaSubmit = (e) => {
+  // ✅ Q&A 작성 시 DB에 저장
+  const handleQnaSubmit = async (e) => {
     e.preventDefault();
     if (!qnaForm.productId) return alert("스타일링이 궁금한 제품을 선택해주세요.");
     if (!qnaForm.title.trim() || !qnaForm.content.trim()) return alert("제목과 내용을 모두 입력해주세요.");
 
-    const newQna = {
-      id: Date.now(),
+    const newQnaData = {
       author: currentUser.user_metadata?.name || 'Guest',
       email: currentUser.email,
-      productId: qnaForm.productId,
+      product_id: qnaForm.productId,
       title: qnaForm.title,
       content: qnaForm.content,
-      reply: null,
-      createdAt: new Date().toLocaleDateString()
     };
 
-    setQnaList([newQna, ...qnaList]);
-    setQnaForm({ productId: '', title: '', content: '' });
-    setQnaProductSearch('');
-    setCurrentView('customer');
+    const { data, error } = await supabase.from('qna').insert([newQnaData]).select();
+
+    if (!error && data) {
+      setQnaList([data[0], ...qnaList]);
+      setQnaForm({ productId: '', title: '', content: '' });
+      setQnaProductSearch('');
+      setCurrentView('customer');
+    } else {
+      alert("문의 등록 중 오류가 발생했습니다.");
+    }
   };
 
-  const handleAdminReply = (e) => {
+  // ✅ 어드민 답변 등록 시 DB 업데이트
+  const handleAdminReply = async (e) => {
     e.preventDefault();
     if (!adminReply.trim()) return;
 
-    setQnaList(qnaList.map(q => q.id === selectedQna.id ? { ...q, reply: adminReply } : q));
-    setSelectedQna({ ...selectedQna, reply: adminReply });
-    setAdminReply('');
-    setIsEditingReply(false); 
+    const { error } = await supabase.from('qna').update({ reply: adminReply }).eq('id', selectedQna.id);
+    
+    if (!error) {
+      setQnaList(qnaList.map(q => q.id === selectedQna.id ? { ...q, reply: adminReply } : q));
+      setSelectedQna({ ...selectedQna, reply: adminReply });
+      setAdminReply('');
+      setIsEditingReply(false); 
+    }
   };
 
-  const handleDeleteQna = (id) => {
+  // ✅ Q&A 삭제 시 DB에서 삭제
+  const handleDeleteQna = async (id) => {
     if(window.confirm("이 문의글을 완전히 삭제하시겠습니까?")) {
-      const newList = qnaList.filter(q => q.id !== id);
-      setQnaList(newList);
+      await supabase.from('qna').delete().eq('id', id);
+      setQnaList(qnaList.filter(q => q.id !== id));
       setSelectedQna(null);
       setCurrentView('customer');
     }
   };
 
-  const handleDeleteReply = (e) => {
+  // ✅ 어드민 답변 삭제 시 DB 업데이트
+  const handleDeleteReply = async (e) => {
     e.preventDefault();
     if(window.confirm("이 답변을 삭제하시겠습니까?")) {
+      await supabase.from('qna').update({ reply: null }).eq('id', selectedQna.id);
       setQnaList(qnaList.map(q => q.id === selectedQna.id ? { ...q, reply: null } : q));
       setSelectedQna({ ...selectedQna, reply: null });
       setIsEditingReply(false);
@@ -687,7 +721,7 @@ export default function App() {
 
             <div className="flex flex-col cursor-none">
               {qnaList.map(qna => {
-                const product = products.find(p => p.id === qna.productId);
+                const product = products.find(p => p.id === qna.product_id); // DB 연동을 위해 product_id 로 변경
                 return (
                   <button 
                     key={qna.id} 
@@ -709,7 +743,8 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-6 text-sm text-gray-400 font-medium min-w-fit cursor-none">
                       <span className="cursor-none">{qna.author}</span>
-                      <span className="cursor-none">{qna.createdAt}</span>
+                      {/* DB의 날짜 형식 변환 */}
+                      <span className="cursor-none">{new Date(qna.created_at).toLocaleDateString()}</span>
                     </div>
                   </button>
                 );
@@ -813,7 +848,7 @@ export default function App() {
 
       case 'qnaDetail':
         if (!selectedQna) return null;
-        const qnaProduct = products.find(p => p.id === selectedQna.productId);
+        const qnaProduct = products.find(p => p.id === selectedQna.product_id); // DB 연동을 위해 product_id 로 변경
 
         return (
           <div className="mt-32 w-full max-w-4xl mx-auto cursor-none">
@@ -844,7 +879,7 @@ export default function App() {
             <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-8 cursor-none">
               <div className="flex gap-6 text-sm font-medium text-gray-500 cursor-none">
                 <span className="cursor-none">{selectedQna.author}</span>
-                <span className="cursor-none">{selectedQna.createdAt}</span>
+                <span className="cursor-none">{new Date(selectedQna.created_at).toLocaleDateString()}</span>
               </div>
             </div>
 
@@ -929,7 +964,7 @@ export default function App() {
   };
 
   return (
-    // 드래그 선택 금지를 위해 select-none 추가, selection 관련 코드 삭제
+    // 드래그 선택 금지를 위해 select-none 추가 적용
     <div className="min-h-screen bg-white text-black font-sans flex cursor-none select-none overflow-hidden">
       
       {isAuthModalOpen && (
