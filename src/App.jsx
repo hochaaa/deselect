@@ -20,7 +20,6 @@ export default function App() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const mainRef = useRef(null);
 
-  // 💡 [수정] 모바일 뒤로가기를 위해 초기 화면을 URL의 해시(#) 값에서 읽어오도록 수정
   const [currentView, setCurrentView] = useState(() => {
     const hash = window.location.hash.replace('#', '');
     return hash || sessionStorage.getItem('currentView') || 'home';
@@ -113,7 +112,6 @@ export default function App() {
     }
   }, [currentView, selectedBrand, selectedCategory, selectedSubCategory, likedTab, selectedQna]);
 
-  // 💡 [수정] 모바일 뒤로가기 처리를 위한 방문 기록(History API) 생성
   useEffect(() => {
     if (!window.location.hash) {
       window.history.replaceState(null, '', `#${currentView}`);
@@ -131,13 +129,11 @@ export default function App() {
     sessionStorage.setItem('brandSortOption', brandSortOption);
   }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, sortOption, brandSortOption]);
 
-  // 💡 [추가] 모바일 기기의 시스템 '뒤로가기' 버튼을 눌렀을 때 작동하는 로직
   useEffect(() => {
     const handlePopState = () => {
       const hash = window.location.hash.replace('#', '') || 'home';
       setCurrentView(hash);
       
-      // 뒤로가기 누르면 열려있던 모든 팝업과 메뉴창을 닫아줍니다.
       setIsMobileMenuOpen(false);
       setIsModalOpen(false);
       setIsAuthModalOpen(false);
