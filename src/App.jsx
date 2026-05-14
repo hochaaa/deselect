@@ -419,7 +419,7 @@ export default function App() {
     <select
       value={sortOption}
       onChange={(e) => setSortOption(e.target.value)}
-      className="text-[11px] font-mono uppercase tracking-widest bg-transparent md:cursor-none outline-none text-white transition-colors pb-1"
+      className="text-[11px] font-mono uppercase tracking-widest bg-transparent md:cursor-none outline-none text-black transition-colors pb-1"
     >
       <option value="newest">Sort by: Newest</option>
       <option value="price_high">Price: High to Low</option>
@@ -431,7 +431,7 @@ export default function App() {
     <select
       value={brandSortOption}
       onChange={(e) => setBrandSortOption(e.target.value)}
-      className="text-[11px] font-mono uppercase tracking-widest bg-transparent md:cursor-none outline-none text-white transition-colors pb-1"
+      className="text-[11px] font-mono uppercase tracking-widest bg-transparent md:cursor-none outline-none text-black transition-colors pb-1"
     >
       <option value="A-Z">Sort by: A-Z</option>
       <option value="Z-A">Sort by: Z-A</option>
@@ -447,7 +447,7 @@ export default function App() {
           onClick={(e) => handleProductClick(e, item.link)} 
           className="group md:cursor-none block outline-none transition-transform duration-500 md:hover:scale-[1.02] hover:-translate-y-1"
         >
-          <div className="aspect-[4/5] bg-gray-800 overflow-hidden mb-4 relative rounded-sm md:cursor-none">
+          <div className="aspect-[4/5] bg-gray-100 overflow-hidden mb-4 relative rounded-sm md:cursor-none">
             <img src={item.img} alt={item.name} className="w-full h-full object-contain" />
             
             <button 
@@ -455,7 +455,7 @@ export default function App() {
               className="absolute bottom-3 right-3 p-2 z-10 md:cursor-none outline-none hover:scale-125 transition-transform"
             >
               <Heart 
-                className={`w-5 h-5 transition-colors ${likedProductIds.includes(item.id) ? 'fill-white text-white' : 'text-white md:hover:text-gray-300'}`} 
+                className={`w-5 h-5 transition-colors ${likedProductIds.includes(item.id) ? 'fill-black text-black' : 'text-black md:hover:text-gray-500'}`} 
               />
             </button>
           </div>
@@ -468,12 +468,12 @@ export default function App() {
                 setSelectedCategory('All');
                 setCurrentView('brandDetail');
               }}
-              className="text-xs text-gray-400 mb-1 font-mono uppercase tracking-widest outline-none md:cursor-none hover:scale-[1.1] hover:text-white hover:font-bold transition-all origin-left text-left"
+              className="text-xs text-gray-500 mb-1 font-mono uppercase tracking-widest outline-none md:cursor-none hover:scale-[1.1] hover:text-black hover:font-bold transition-all origin-left text-left"
             >
               {item.brand}
             </button>
-            <p className="font-medium text-sm mb-1 line-clamp-1 w-full text-left text-white">{item.name}</p>
-            <p className="font-bold text-sm w-full text-left text-white">{item.price}</p>
+            <p className="font-medium text-sm mb-1 line-clamp-1 w-full text-left">{item.name}</p>
+            <p className="font-bold text-sm w-full text-left">{item.price}</p>
           </div>
         </a>
       ))}
@@ -481,14 +481,7 @@ export default function App() {
   );
 
   if (isLoading) {
-    return (
-      <div 
-        className="min-h-screen bg-black flex items-center justify-center font-bold text-2xl outline-none md:cursor-none text-white"
-        style={{ backgroundImage: "url('Grain texture_13.jpeg')", backgroundSize: 'cover', backgroundAttachment: 'fixed' }}
-      >
-        LOADING DE:SELECT...
-      </div>
-    );
+    return <div className="min-h-screen bg-white flex items-center justify-center font-bold text-2xl outline-none md:cursor-none">LOADING DE:SELECT...</div>;
   }
 
   const renderContent = () => {
@@ -496,16 +489,16 @@ export default function App() {
       
       case 'home':
         return (
-          <div className="h-full min-h-[75vh] flex flex-col justify-center md:cursor-none relative z-10">
+          <div className="h-full min-h-[75vh] flex flex-col justify-center md:cursor-none">
             <div className="flex flex-col gap-2 mb-12">
-              <h2 className="text-5xl md:text-7xl lg:text-[7rem] font-bold tracking-tighter leading-[0.9] text-white md:cursor-none">
+              <h2 className="text-5xl md:text-7xl lg:text-[7rem] font-bold tracking-tighter leading-[0.9] text-black md:cursor-none">
                 WE SELECT,
               </h2>
-              <h2 className="text-5xl md:text-7xl lg:text-[7rem] font-bold tracking-tighter leading-[0.9] text-gray-700 md:cursor-none">
+              <h2 className="text-5xl md:text-7xl lg:text-[7rem] font-bold tracking-tighter leading-[0.9] text-gray-300 md:cursor-none">
                 YOU EXPERIENCE.
               </h2>
             </div>
-            <p className="text-lg md:text-xl font-medium text-gray-300 max-w-2xl mb-16 leading-relaxed tracking-tight break-keep md:cursor-none">
+            <p className="text-lg md:text-xl font-medium text-gray-500 max-w-2xl mb-16 leading-relaxed tracking-tight break-keep md:cursor-none">
               수많은 브랜드와 넘쳐나는 정보 속, 우리는 오직 제품에만 집중합니다. DE:SELECT의 시선으로 바라본 큐레이션을 경험해보세요.
             </p>
             <div>
@@ -516,7 +509,7 @@ export default function App() {
                   setCurrentView('category');
                   setIsProductMenuOpen(true);
                 }}
-                className="group flex items-center gap-4 text-sm font-bold uppercase tracking-[0.2em] outline-none md:cursor-none text-white hover:text-gray-400 transition-colors"
+                className="group flex items-center gap-4 text-sm font-bold uppercase tracking-[0.2em] outline-none md:cursor-none text-black hover:text-gray-500 transition-colors"
               >
                 <span>Explore the curation</span>
                 <span className="transition-transform duration-500 group-hover:translate-x-4">→</span>
@@ -527,25 +520,25 @@ export default function App() {
 
       case 'about':
         return (
-          <div className="mt-32 w-full md:cursor-none relative z-10">
+          <div className="mt-32 w-full md:cursor-none">
             <div className="flex justify-between items-center mb-5 md:cursor-none">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none text-white">About Us</h2>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">About Us</h2>
             </div>
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="md:cursor-none">
-                <p className="text-sm text-gray-400 font-medium md:cursor-none break-keep">DE:SELECT</p>
+                <p className="text-sm text-gray-500 font-medium md:cursor-none break-keep">DE:SELECT</p>
               </div>
             </div>
             
             <div className="max-w-2xl md:cursor-none">
-              <p className="text-lg leading-relaxed text-gray-300 mb-6 md:cursor-none">
+              <p className="text-lg leading-relaxed text-gray-600 mb-6 md:cursor-none">
                 넘쳐나는 정보와 빠르게 변화하는 트렌드 속에서, 우리는 아직 온전한 취향을 발견하지 못한 이들을 위해 존재합니다. 가격이나 불필요한 이슈 등 편견에 구애받지 않고 오직 제품만을 통해 우리의 시각을 제안하는 <strong>큐레이션 플랫폼</strong>입니다.
               </p>
-              <p className="text-lg leading-relaxed text-gray-300 mb-6 md:cursor-none">
+              <p className="text-lg leading-relaxed text-gray-600 mb-6 md:cursor-none">
                 취향이라는 것은 오직 한가지 스타일에만 매몰되지 않아도 된다고 생각합니다.<br />
                 한 사람을 한가지 단어로 정의할 수 없듯이, 우리는 패션에 있어서도 하나의 스타일만을 고집하지 않고 다양한 시도를 해보는 것을 제안합니다.
               </p>
-              <p className="text-lg leading-relaxed text-gray-300 md:cursor-none">
+              <p className="text-lg leading-relaxed text-gray-600 md:cursor-none">
                 <strong>개인의 짙은 취향이, 타인의 새로운 경험이 되기까지의 여정을 함께합니다.</strong>
               </p>
             </div>
@@ -555,11 +548,11 @@ export default function App() {
       case 'brands':
         const sortedBrands = getSortedBrands(availableBrands);
         return (
-          <div className="mt-32 w-full md:cursor-none relative z-10">
+          <div className="mt-32 w-full md:cursor-none">
             <div className="flex justify-between items-center mb-5 md:cursor-none">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none text-white">Brands</h2>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">Brands</h2>
             </div>
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="hidden md:block md:cursor-none">
                 <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
               </div>
@@ -568,7 +561,7 @@ export default function App() {
               </div>
             </div>
             
-            <ul className="flex flex-col gap-6 text-4xl font-medium tracking-tighter md:cursor-none text-white">
+            <ul className="flex flex-col gap-6 text-4xl font-medium tracking-tighter md:cursor-none">
               {sortedBrands.map(brand => (
                 <li key={brand}>
                   <button 
@@ -588,22 +581,22 @@ export default function App() {
         const finallyFiltered = selectedCategory === 'All' ? filteredByBrand : filteredByBrand.filter(p => p.category === selectedCategory);
         const sortedBrandProducts = getSortedProducts(finallyFiltered);
         return (
-          <div className="mt-32 w-full md:cursor-none relative z-10">
+          <div className="mt-32 w-full md:cursor-none">
             <div className="flex items-center gap-5 mb-5 md:cursor-none">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none text-white">{selectedBrand}</h2>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">{selectedBrand}</h2>
               <button 
                 onClick={(e) => toggleFavoriteBrand(e, selectedBrand)}
                 className="outline-none md:cursor-none flex items-center justify-center"
               >
-                <Heart strokeWidth={1.5} className={`w-7 h-7 transition-transform hover:scale-125 md:cursor-none ${favoriteBrands.includes(selectedBrand) ? 'fill-white text-white' : 'text-gray-700 hover:text-white'}`} />
+                <Heart strokeWidth={1.5} className={`w-7 h-7 transition-transform hover:scale-125 md:cursor-none ${favoriteBrands.includes(selectedBrand) ? 'fill-black text-black' : 'text-gray-300 hover:text-black'}`} />
               </button>
             </div>
             
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
-              <div className="flex flex-wrap gap-4 md:gap-6 text-sm font-semibold text-gray-500 md:cursor-none">
-                <button onClick={() => setSelectedCategory('All')} className={`${selectedCategory === 'All' ? 'text-white' : 'hover:text-white'} transition md:cursor-none outline-none`}>All</button>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="flex flex-wrap gap-4 md:gap-6 text-sm font-semibold text-gray-400 md:cursor-none">
+                <button onClick={() => setSelectedCategory('All')} className={`${selectedCategory === 'All' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>All</button>
                 {categories.slice(1).map(cat => (
-                  <button key={cat} onClick={() => setSelectedCategory(cat)} className={`${selectedCategory === cat ? 'text-white' : 'hover:text-white'} transition md:cursor-none outline-none`}>{cat}</button>
+                  <button key={cat} onClick={() => setSelectedCategory(cat)} className={`${selectedCategory === cat ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>{cat}</button>
                 ))}
               </div>
               
@@ -612,7 +605,7 @@ export default function App() {
               </div>
             </div>
             {renderProductGrid(sortedBrandProducts)}
-            {sortedBrandProducts.length === 0 && <p className="text-gray-500 mt-10 md:cursor-none">해당 카테고리에 등록된 상품이 없습니다.</p>}
+            {sortedBrandProducts.length === 0 && <p className="text-gray-400 mt-10 md:cursor-none">해당 카테고리에 등록된 상품이 없습니다.</p>}
           </div>
         );
       
@@ -625,20 +618,20 @@ export default function App() {
         const sortedCategoryProducts = getSortedProducts(filteredByCategory);
 
         return (
-          <div className="mt-32 w-full md:cursor-none relative z-10">
+          <div className="mt-32 w-full md:cursor-none">
             <div className="flex justify-between items-center mb-5 md:cursor-none">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none text-white">{selectedCategory}</h2>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">{selectedCategory}</h2>
             </div>
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
-              <div className="flex flex-wrap gap-4 md:gap-6 text-sm font-semibold text-gray-500 md:cursor-none">
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="flex flex-wrap gap-4 md:gap-6 text-sm font-semibold text-gray-400 md:cursor-none">
                 {selectedCategory === 'All' ? (
                   <>
-                    <button onClick={() => setSelectedCategory('All')} className="text-white transition md:cursor-none outline-none">All</button>
+                    <button onClick={() => setSelectedCategory('All')} className="text-black transition md:cursor-none outline-none">All</button>
                     {categories.slice(1).map(cat => (
                       <button 
                         key={cat} 
                         onClick={() => { setSelectedCategory(cat); setSelectedSubCategory('All'); }} 
-                        className="hover:text-white transition md:cursor-none outline-none"
+                        className="hover:text-black transition md:cursor-none outline-none"
                       >
                         {cat}
                       </button>
@@ -649,7 +642,7 @@ export default function App() {
                     <button 
                       key={sub} 
                       onClick={() => setSelectedSubCategory(sub)} 
-                      className={`${selectedSubCategory === sub ? 'text-white' : 'hover:text-white'} transition md:cursor-none outline-none`}
+                      className={`${selectedSubCategory === sub ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}
                     >
                       {sub}
                     </button>
@@ -661,18 +654,18 @@ export default function App() {
               </div>
             </div>
             {renderProductGrid(sortedCategoryProducts)}
-            {sortedCategoryProducts.length === 0 && <p className="text-gray-500 mt-10 md:cursor-none">해당 카테고리에 등록된 상품이 없습니다.</p>}
+            {sortedCategoryProducts.length === 0 && <p className="text-gray-400 mt-10 md:cursor-none">해당 카테고리에 등록된 상품이 없습니다.</p>}
           </div>
         );
 
       case 'search':
         const sortedSearchProducts = getSortedProducts(searchedProducts);
         return (
-          <div className="mt-32 w-full md:cursor-none relative z-10">
+          <div className="mt-32 w-full md:cursor-none">
             <div className="flex justify-between items-center mb-5 md:cursor-none">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none text-white">SEARCH</h2>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">SEARCH</h2>
             </div>
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="hidden md:block md:cursor-none">
                 <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
               </div>
@@ -681,37 +674,37 @@ export default function App() {
               </div>
             </div>
             {renderProductGrid(sortedSearchProducts)}
-            {sortedSearchProducts.length === 0 && <p className="text-gray-500 mt-10 md:cursor-none">검색 결과가 없습니다.</p>}
+            {sortedSearchProducts.length === 0 && <p className="text-gray-400 mt-10 md:cursor-none">검색 결과가 없습니다.</p>}
           </div>
         );
 
       case 'mypage':
         return (
-          <div className="mt-32 w-full md:cursor-none relative z-10">
+          <div className="mt-32 w-full md:cursor-none">
             <div className="flex justify-between items-center mb-5 md:cursor-none">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none text-white">My Page</h2>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">My Page</h2>
             </div>
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
               <div className="md:cursor-none">
                 <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
               </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl md:cursor-none">
-              <div className="border border-white/10 p-6 flex flex-col items-center justify-center text-center h-full min-h-[200px] md:cursor-none bg-gray-900 grainy">
-                <div className="w-20 h-20 bg-gray-800 rounded-full mb-4 flex items-center justify-center md:cursor-none"><User className="text-gray-400 w-8 h-8 md:cursor-none"/></div>
-                <h3 className="font-bold text-lg mb-1 md:cursor-none text-white">{currentUser ? currentUser.user_metadata?.name : 'Guest'} 님</h3>
-                <p className="text-xs text-gray-400 md:cursor-none">{currentUser ? currentUser.email : '로그인이 필요합니다.'}</p>
+              <div className="border p-6 flex flex-col items-center justify-center text-center h-full min-h-[200px] md:cursor-none">
+                <div className="w-20 h-20 bg-gray-200 rounded-full mb-4 flex items-center justify-center md:cursor-none"><User className="text-gray-500 w-8 h-8 md:cursor-none"/></div>
+                <h3 className="font-bold text-lg mb-1 md:cursor-none">{currentUser ? currentUser.user_metadata?.name : 'Guest'} 님</h3>
+                <p className="text-xs text-gray-500 md:cursor-none">{currentUser ? currentUser.email : '로그인이 필요합니다.'}</p>
               </div>
               
               <button 
                 onClick={() => { setCurrentView('liked'); setLikedTab('products'); }} 
-                className="border border-white/10 p-6 hover:bg-gray-800 grainy transition md:cursor-none outline-none flex flex-col justify-center items-center text-center h-full min-h-[200px] bg-gray-900"
+                className="border p-6 hover:bg-gray-50 transition md:cursor-none outline-none flex flex-col justify-center items-center text-center h-full min-h-[200px]"
               >
-                <Heart className="mb-4 text-white w-8 h-8 fill-white md:cursor-none grainy" />
-                <div className="md:cursor-none grainy">
-                  <h4 className="font-bold text-lg md:cursor-none text-white">Liked</h4>
-                  <p className="text-sm text-gray-400 mt-2 md:cursor-none grainy">Product / Brands </p>
+                <Heart className="mb-4 text-black w-8 h-8 fill-black md:cursor-none" />
+                <div className="md:cursor-none">
+                  <h4 className="font-bold text-lg md:cursor-none">Liked</h4>
+                  <p className="text-sm text-gray-500 mt-2 md:cursor-none">Product / Brands </p>
                 </div>
               </button>
             </div>
@@ -723,27 +716,27 @@ export default function App() {
         const sortedWishlistProds = getSortedProducts(wishlistProds);
         
         return (
-          <div className="mt-32 w-full md:cursor-none relative z-10 grainy">
-            <div className="flex justify-between items-center mb-5 md:cursor-none grainy">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none text-white grainy">LIKED</h2>
+          <div className="mt-32 w-full md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">LIKED</h2>
             </div>
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0 grainy">
-              <div className="flex gap-6 text-sm font-semibold text-gray-500 md:cursor-none grainy">
-                <button onClick={() => setLikedTab('products')} className={`${likedTab === 'products' ? 'text-white' : 'hover:text-white grainy'} transition md:cursor-none outline-none grainy`}>Product</button>
-                <button onClick={() => setLikedTab('brands')} className={`${likedTab === 'brands' ? 'text-white' : 'hover:text-white grainy'} transition md:cursor-none outline-none grainy`}>Brand</button>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="flex gap-6 text-sm font-semibold text-gray-400 md:cursor-none">
+                <button onClick={() => setLikedTab('products')} className={`${likedTab === 'products' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>Product</button>
+                <button onClick={() => setLikedTab('brands')} className={`${likedTab === 'brands' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>Brand</button>
               </div>
             </div>
 
             {likedTab === 'products' && (
               <>
-                <div className="flex justify-end mb-8 md:cursor-none grainy">
+                <div className="flex justify-end mb-8 md:cursor-none">
                   {renderSortDropdown()}
                 </div>
                 {renderProductGrid(sortedWishlistProds)}
                 {sortedWishlistProds.length === 0 && (
-                  <div className="text-center py-20 md:cursor-none grainy">
-                    <Heart className="w-12 h-12 text-gray-600 mx-auto mb-4 md:cursor-none grainy" />
-                    <p className="text-gray-500 font-medium md:cursor-none grainy">좋아요 누른 상품이 없습니다.</p>
+                  <div className="text-center py-20 md:cursor-none">
+                    <Heart className="w-12 h-12 text-gray-200 mx-auto mb-4 md:cursor-none" />
+                    <p className="text-gray-400 font-medium md:cursor-none">좋아요 누른 상품이 없습니다.</p>
                   </div>
                 )}
               </>
@@ -751,28 +744,28 @@ export default function App() {
 
             {likedTab === 'brands' && (
               <>
-                <ul className="flex flex-col gap-6 text-2xl md:text-4xl font-medium tracking-tighter mt-8 md:cursor-none grainy text-white grainy">
+                <ul className="flex flex-col gap-6 text-2xl md:text-4xl font-medium tracking-tighter mt-8 md:cursor-none">
                   {favoriteBrands.map(brand => (
-                    <li key={brand} className="flex items-center gap-5 group border-b border-white/10 pb-6 md:cursor-none grainy">
+                    <li key={brand} className="flex items-center gap-5 group border-b border-gray-50 pb-6 md:cursor-none">
                       <button 
                         onClick={() => { setSelectedBrand(brand); setSelectedCategory('All'); setCurrentView('brandDetail'); }} 
-                        className="hover:text-gray-400 transition md:cursor-none text-left outline-none grainy"
+                        className="hover:text-gray-400 transition md:cursor-none text-left outline-none"
                       >
                         {brand}
                       </button>
                       <button 
                         onClick={(e) => toggleFavoriteBrand(e, brand)}
-                        className="outline-none md:cursor-none flex items-center justify-center grainy"
+                        className="outline-none md:cursor-none flex items-center justify-center"
                       >
-                        <Heart strokeWidth={1.5} className="w-6 h-6 fill-white text-white hover:scale-125 transition-transform md:cursor-none grainy" />
+                        <Heart strokeWidth={1.5} className="w-6 h-6 fill-black text-black hover:scale-125 transition-transform md:cursor-none" />
                       </button>
                     </li>
                   ))}
                 </ul>
                 {favoriteBrands.length === 0 && (
-                  <div className="text-center py-20 md:cursor-none grainy">
-                    <Heart className="w-12 h-12 text-gray-600 mx-auto mb-4 md:cursor-none grainy" />
-                    <p className="text-gray-500 font-medium md:cursor-none grainy">좋아요 누른 브랜드가 없습니다.</p>
+                  <div className="text-center py-20 md:cursor-none">
+                    <Heart className="w-12 h-12 text-gray-200 mx-auto mb-4 md:cursor-none" />
+                    <p className="text-gray-400 font-medium md:cursor-none">좋아요 누른 브랜드가 없습니다.</p>
                   </div>
                 )}
               </>
@@ -782,15 +775,15 @@ export default function App() {
 
       case 'customer':
         return (
-          <div className="mt-32 w-full md:cursor-none relative z-10 grainy">
-            <div className="flex justify-between items-center mb-5 md:cursor-none grainy grainy">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none grainy text-white grainy">STYLING Q&A</h2>
-              <div className="grainy grainy grainy grainy"></div>
+          <div className="mt-32 w-full md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">STYLING Q&A</h2>
+              <div></div>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none grainy gap-4 md:gap-0 grainy grainy">
-              <div className="md:cursor-none grainy grainy">
-                <p className="text-sm text-gray-400 font-medium md:cursor-none grainy grainy break-keep grainy">DE:SELECT 큐레이션 제품에 대한 스타일링 팁을 제안해 드립니다.</p>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="md:cursor-none">
+                <p className="text-sm text-gray-500 font-medium md:cursor-none break-keep">DE:SELECT 큐레이션 제품에 대한 스타일링 팁을 제안해 드립니다.</p>
               </div>
               <button 
                 onClick={() => {
@@ -801,13 +794,13 @@ export default function App() {
                   }
                   setCurrentView('qnaWrite');
                 }}
-                className="px-6 py-1 bg-white text-black text-xs font-bold tracking-widest hover:scale-105 transition-transform md:cursor-none outline-none grainy w-fit grainy grainy grainy grainy"
+                className="px-6 py-1 bg-black text-white text-xs font-bold tracking-widest hover:scale-105 transition-transform md:cursor-none outline-none w-fit"
               >
                 WRITE
               </button>
             </div>
 
-            <div className="flex flex-col md:cursor-none grainy grainy grainy">
+            <div className="flex flex-col md:cursor-none">
               {qnaList.map(qna => {
                 const product = products.find(p => p.id === qna.product_id); 
                 return (
@@ -818,29 +811,29 @@ export default function App() {
                       setIsEditingReply(false);
                       setCurrentView('qnaDetail'); 
                     }}
-                    className="flex flex-col md:flex-row md:items-center justify-between p-6 border-b border-white/10 hover:bg-gray-800 transition md:cursor-none outline-none grainy text-left grainy gap-4 grainy grainy"
+                    className="flex flex-col md:flex-row md:items-center justify-between p-6 border-b border-gray-100 hover:bg-gray-50 transition md:cursor-none outline-none text-left gap-4"
                   >
-                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 flex-1 md:cursor-none grainy grainy">
-                      <span className={`w-fit md:min-w-[80px] text-center text-[10px] font-bold tracking-widest px-2 py-1 md:cursor-none grainy ${qna.reply ? 'bg-white text-black' : 'bg-gray-800 text-gray-400 grainy grainy'}`}>
-                        {qna.reply ? '답변완료' : '답변대기 grainy'}
+                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 flex-1 md:cursor-none">
+                      <span className={`w-fit md:min-w-[80px] text-center text-[10px] font-bold tracking-widest px-2 py-1 md:cursor-none ${qna.reply ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'}`}>
+                        {qna.reply ? '답변완료' : '답변대기'}
                       </span>
-                      <div className="flex flex-col md:cursor-none grainy grainy grainy">
-                        <span className="text-xs text-gray-500 font-mono uppercase mb-1 md:cursor-none grainy grainy grainy">{product?.brand}</span>
-                        <h4 className="font-bold text-lg md:cursor-none grainy text-white grainy grainy grainy">{qna.title}</h4>
+                      <div className="flex flex-col md:cursor-none">
+                        <span className="text-xs text-gray-400 font-mono uppercase mb-1 md:cursor-none">{product?.brand}</span>
+                        <h4 className="font-bold text-lg md:cursor-none">{qna.title}</h4>
                       </div>
                     </div>
-                    <div className="flex items-center gap-6 text-sm text-gray-500 font-medium min-w-fit md:cursor-none grainy grainy grainy">
-                      <span className="md:cursor-none grainy grainy grainy">{qna.author}</span>
-                      <span className="md:cursor-none grainy grainy grainy grainy grainy">{new Date(qna.created_at).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-6 text-sm text-gray-400 font-medium min-w-fit md:cursor-none">
+                      <span className="md:cursor-none">{qna.author}</span>
+                      <span className="md:cursor-none">{new Date(qna.created_at).toLocaleDateString()}</span>
                     </div>
                   </button>
                 );
               })}
 
               {qnaList.length === 0 && (
-                <div className="text-center py-32 md:cursor-none grainy grainy grainy">
-                  <MessageSquare className="w-12 h-12 text-gray-600 mx-auto mb-4 md:cursor-none grainy grainy grainy grainy grainy" />
-                  <p className="text-gray-500 font-medium md:cursor-none grainy grainy grainy grainy grainy">등록된 문의가 없습니다.</p>
+                <div className="text-center py-32 md:cursor-none">
+                  <MessageSquare className="w-12 h-12 text-gray-200 mx-auto mb-4 md:cursor-none" />
+                  <p className="text-gray-400 font-medium md:cursor-none">등록된 문의가 없습니다.</p>
                 </div>
               )}
             </div>
@@ -849,30 +842,30 @@ export default function App() {
 
       case 'qnaWrite':
         return (
-          <div className="mt-32 w-full max-w-4xl mx-auto md:cursor-none relative z-10 grainy grainy grainy">
-            <div className="flex justify-between items-center mb-5 md:cursor-none grainy grainy grainy grainy">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none grainy text-white grainy grainy grainy grainy">ASK STYLING grainy</h2>
+          <div className="mt-32 w-full max-w-4xl mx-auto md:cursor-none">
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">ASK STYLING</h2>
             </div>
-            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-white/10 pb-4 mb-8 min-h-[2.5rem] md:cursor-none grainy gap-4 md:gap-0 grainy grainy grainy grainy">
-              <div className="md:cursor-none grainy grainy grainy grainy">
-                <p className="text-sm text-transparent select-none md:cursor-none grainy grainy grainy grainy">&nbsp;</p>
+            <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4 md:gap-0">
+              <div className="md:cursor-none">
+                <p className="text-sm text-transparent select-none md:cursor-none">&nbsp;</p>
               </div>
             </div>
             
-            <form onSubmit={handleQnaSubmit} className="flex flex-col gap-10 md:cursor-none grainy grainy grainy grainy grainy">
+            <form onSubmit={handleQnaSubmit} className="flex flex-col gap-10 md:cursor-none">
               
-              <div className="flex flex-col gap-4 md:cursor-none grainy grainy grainy grainy">
-                <label className="font-bold text-sm tracking-widest md:cursor-none grainy text-white grainy grainy grainy grainy">1. 스타일링이 궁금한 제품을 선택해주세요. grainy grainy</label>
+              <div className="flex flex-col gap-4 md:cursor-none">
+                <label className="font-bold text-sm tracking-widest md:cursor-none">1. 스타일링이 궁금한 제품을 선택해주세요.</label>
                 
                 <input 
                   type="text"
                   placeholder="브랜드명 또는 제품명으로 검색"
                   value={qnaProductSearch}
                   onChange={(e) => setQnaProductSearch(e.target.value)}
-                  className="w-full border border-white/10 bg-gray-900 p-3 text-sm focus:border-white outline-none transition-colors md:cursor-none grainy mb-2 rounded-sm text-white select-text grainy grainy grainy"
+                  className="w-full border border-gray-200 bg-gray-50 p-3 text-sm focus:border-black outline-none transition-colors md:cursor-none mb-2 rounded-sm select-text"
                 />
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-64 overflow-y-auto p-4 border border-white/10 bg-gray-950 rounded-sm md:cursor-none grainy grainy grainy grainy">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-64 overflow-y-auto p-4 border border-gray-200 bg-gray-50 rounded-sm md:cursor-none">
                   {products
                     .filter(p => 
                       p.name.toLowerCase().includes(qnaProductSearch.toLowerCase()) || 
@@ -883,41 +876,41 @@ export default function App() {
                       type="button"
                       key={product.id}
                       onClick={() => setQnaForm({...qnaForm, productId: product.id})}
-                      className={`flex flex-col p-2 bg-gray-900 grainy border transition-all md:cursor-none outline-none grainy ${qnaForm.productId === product.id ? 'border-white grainy shadow-md scale-[1.02] grainy' : 'border-white/5 hover:border-white/20 grainy grainy'}`}
+                      className={`flex flex-col p-2 bg-white border transition-all md:cursor-none outline-none ${qnaForm.productId === product.id ? 'border-black shadow-md scale-[1.02]' : 'border-gray-100 hover:border-gray-300'}`}
                     >
-                      <div className="aspect-[4/5] w-full bg-gray-800 grainy mb-2 md:cursor-none grainy grainy grainy">
-                        <img src={product.img} alt={product.name} className="w-full h-full object-contain md:cursor-none grainy grainy grainy" />
+                      <div className="aspect-[4/5] w-full bg-gray-100 mb-2 md:cursor-none">
+                        <img src={product.img} alt={product.name} className="w-full h-full object-contain md:cursor-none" />
                       </div>
-                      <span className="text-[10px] text-gray-500 grainy font-mono uppercase line-clamp-1 text-left w-full md:cursor-none grainy grainy grainy grainy grainy">{product.brand}</span>
-                      <span className="text-xs font-bold line-clamp-1 text-left w-full mt-1 md:cursor-none grainy text-white grainy grainy grainy grainy grainy grainy">{product.name}</span>
+                      <span className="text-[10px] text-gray-500 font-mono uppercase line-clamp-1 text-left w-full md:cursor-none">{product.brand}</span>
+                      <span className="text-xs font-bold line-clamp-1 text-left w-full mt-1 md:cursor-none">{product.name}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 md:cursor-none grainy grainy grainy grainy grainy grainy">
-                <label className="font-bold text-sm tracking-widest md:cursor-none grainy text-white grainy grainy grainy grainy grainy">2. 제목</label>
+              <div className="flex flex-col gap-4 md:cursor-none">
+                <label className="font-bold text-sm tracking-widest md:cursor-none">2. 제목</label>
                 <input 
                   type="text" 
                   placeholder="제목을 입력해주세요."
                   value={qnaForm.title}
                   onChange={(e) => setQnaForm({...qnaForm, title: e.target.value})}
-                  className="w-full border-b border-white/10 bg-transparent focus:border-white outline-none pb-2 text-sm transition-colors md:cursor-none grainy grainy text-white select-text"
+                  className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 md:cursor-none select-text"
                 />
               </div>
 
-              <div className="flex flex-col gap-4 md:cursor-none grainy grainy grainy grainy grainy">
-                <label className="font-bold text-sm tracking-widest md:cursor-none grainy text-white grainy grainy grainy grainy grainy">3. 문의 내용</label>
+              <div className="flex flex-col gap-4 md:cursor-none">
+                <label className="font-bold text-sm tracking-widest md:cursor-none">3. 문의 내용</label>
                 <textarea 
-                  placeholder="키, 체형, 평소 즐겨입는 스타일 등을 적어주시면 더욱 디테일한 스타일링 팁을 제안해 드립니다. grainy grainy"
+                  placeholder="키, 체형, 평소 즐겨입는 스타일 등을 적어주시면 더욱 디테일한 스타일링 팁을 제안해 드립니다."
                   value={qnaForm.content}
                   onChange={(e) => setQnaForm({...qnaForm, content: e.target.value})}
                   rows={6}
-                  className="w-full border border-white/10 grainy bg-gray-900 focus:border-white outline-none grainy grainy grainy grainy p-4 text-sm transition-colors md:cursor-none text-white resize-none rounded-sm select-text grainy grainy grainy"
+                  className="w-full border border-gray-300 focus:border-black outline-none p-4 text-sm transition-colors bg-transparent placeholder-gray-400 md:cursor-none resize-none rounded-sm select-text"
                 />
               </div>
 
-              <div className="flex gap-4 justify-end mt-4 md:cursor-none grainy grainy grainy grainy grainy">
+              <div className="flex gap-4 justify-end mt-4 md:cursor-none">
                 <button 
                   type="button" 
                   onClick={() => { 
@@ -925,15 +918,15 @@ export default function App() {
                     setQnaForm({ productId: '', title: '', content: '' }); 
                     setQnaProductSearch(''); 
                   }}
-                  className="px-8 py-4 bg-gray-800 text-gray-300 grainy border border-white/10 text-sm font-bold tracking-widest hover:bg-gray-700 grainy transition-colors md:cursor-none outline-none grainy grainy grainy grainy grainy grainy"
+                  className="px-8 py-4 bg-white text-gray-500 border border-gray-200 text-sm font-bold tracking-widest hover:bg-gray-50 transition-colors md:cursor-none outline-none"
                 >
-                  CANCEL grainy
+                  CANCEL
                 </button>
                 <button 
                   type="submit" 
-                  className="px-8 py-4 bg-white grainy grainy text-black grainy grainy text-sm font-bold tracking-widest hover:scale-105 grainy transition-transform md:cursor-none outline-none grainy grainy grainy grainy grainy"
+                  className="px-8 py-4 bg-black text-white text-sm font-bold tracking-widest hover:scale-105 transition-transform md:cursor-none outline-none"
                 >
-                  SUBMIT grainy grainy grainy
+                  SUBMIT
                 </button>
               </div>
             </form>
@@ -945,8 +938,8 @@ export default function App() {
         const qnaProduct = products.find(p => p.id === selectedQna.product_id); 
 
         return (
-          <div className="mt-32 w-full max-w-4xl mx-auto md:cursor-none relative z-10 grainy grainy grainy">
-            <div className="flex justify-between items-center mb-8 md:cursor-none grainy grainy grainy">
+          <div className="mt-32 w-full max-w-4xl mx-auto md:cursor-none">
+            <div className="flex justify-between items-center mb-8 md:cursor-none">
               <button 
                 onClick={() => { 
                   setCurrentView('customer'); 
@@ -954,101 +947,101 @@ export default function App() {
                   setIsEditingReply(false);
                   setAdminReply('');
                 }}
-                className="text-sm font-bold text-gray-500 grainy hover:text-white grainy transition-colors md:cursor-none outline-none grainy tracking-widest uppercase"
+                className="text-sm font-bold text-gray-400 hover:text-black transition-colors md:cursor-none outline-none tracking-widest uppercase"
               >
-                ← Back to List grainy grainy grainy
+                ← Back to List
               </button>
 
               {isAdmin && (
                 <button 
                   onClick={() => handleDeleteQna(selectedQna.id)}
-                  className="text-sm font-bold text-red-500 grainy hover:text-red-700 grainy transition-colors md:cursor-none outline-none grainy tracking-widest uppercase"
+                  className="text-sm font-bold text-red-500 hover:text-red-700 transition-colors md:cursor-none outline-none tracking-widest uppercase"
                 >
-                  DELETE POST grainy
+                  DELETE POST
                 </button>
               )}
             </div>
             
-            <div className="flex justify-between items-center mb-5 md:cursor-none grainy grainy grainy">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none grainy text-white grainy grainy grainy">{selectedQna.title} grainy grainy grainy</h2>
+            <div className="flex justify-between items-center mb-5 md:cursor-none">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">{selectedQna.title}</h2>
             </div>
-            <div className="flex justify-between items-center border-b border-white/10 grainy grainy pb-4 mb-8 min-h-[2.5rem] md:cursor-none grainy grainy grainy">
-              <div className="flex gap-6 text-sm font-medium text-gray-400 grainy md:cursor-none grainy grainy">
-                <span className="md:cursor-none grainy grainy grainy">{selectedQna.author} grainy</span>
-                <span className="md:cursor-none grainy grainy grainy grainy">{new Date(selectedQna.created_at).toLocaleDateString()} grainy grainy grainy</span>
+            <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-8 min-h-[2.5rem] md:cursor-none">
+              <div className="flex gap-6 text-sm font-medium text-gray-500 md:cursor-none">
+                <span className="md:cursor-none">{selectedQna.author}</span>
+                <span className="md:cursor-none">{new Date(selectedQna.created_at).toLocaleDateString()}</span>
               </div>
             </div>
 
             {qnaProduct && (
-              <div className="flex items-center gap-6 p-6 bg-gray-900 grainy grainy grainy border border-white/10 grainy grainy grainy grainy mb-12 rounded-sm md:cursor-none hover:border-white/20 transition-colors" onClick={() => { setSelectedBrand(qnaProduct.brand); setSelectedCategory('All'); setCurrentView('brandDetail'); setIsMobileMenuOpen(false); }}>
-                <div className="w-24 h-32 bg-gray-800 grainy grainy grainy md:cursor-none shrink-0 grainy grainy grainy">
-                  <img src={qnaProduct.img} alt={qnaProduct.name} className="w-full h-full object-contain md:cursor-none grainy grainy grainy grainy" />
+              <div className="flex items-center gap-6 p-6 bg-gray-50 border border-gray-100 mb-12 rounded-sm md:cursor-none hover:border-gray-300 transition-colors" onClick={() => { setSelectedBrand(qnaProduct.brand); setSelectedCategory('All'); setCurrentView('brandDetail'); setIsMobileMenuOpen(false); }}>
+                <div className="w-24 h-32 bg-white md:cursor-none shrink-0">
+                  <img src={qnaProduct.img} alt={qnaProduct.name} className="w-full h-full object-contain md:cursor-none" />
                 </div>
-                <div className="flex flex-col md:cursor-none grainy grainy grainy">
-                  <span className="text-xs text-gray-500 grainy grainy font-mono uppercase mb-2 md:cursor-none grainy grainy grainy grainy">{qnaProduct.brand}</span>
-                  <span className="text-lg font-bold mb-1 md:cursor-none grainy text-white grainy grainy grainy grainy grainy">{qnaProduct.name} grainy</span>
-                  <span className="text-sm font-bold text-gray-400 md:cursor-none grainy grainy grainy grainy">{qnaProduct.price} grainy grainy grainy grainy grainy</span>
+                <div className="flex flex-col md:cursor-none">
+                  <span className="text-xs text-gray-500 font-mono uppercase mb-2 md:cursor-none">{qnaProduct.brand}</span>
+                  <span className="text-lg font-bold mb-1 md:cursor-none">{qnaProduct.name}</span>
+                  <span className="text-sm font-bold text-gray-600 md:cursor-none">{qnaProduct.price}</span>
                 </div>
               </div>
             )}
 
-            <div className="min-h-[150px] text-lg leading-relaxed text-gray-300 grainy grainy grainy grainy whitespace-pre-wrap mb-16 md:cursor-none grainy grainy grainy">
-              {selectedQna.content} grainy grainy grainy grainy
+            <div className="min-h-[150px] text-lg leading-relaxed text-gray-800 whitespace-pre-wrap mb-16 md:cursor-none">
+              {selectedQna.content}
             </div>
 
-            <div className="bg-gray-900 grainy border border-white/10 grainy grainy grainy grainy p-8 rounded-sm mb-12 md:cursor-none grainy grainy grainy grainy grainy">
-              <h4 className="text-sm font-bold tracking-widest mb-6 flex items-center gap-2 md:cursor-none grainy text-white grainy grainy grainy grainy grainy">
-                <MessageSquare className="w-4 h-4 md:cursor-none grainy grainy grainy grainy grainy" /> grainy 
-                DE:SELECT STYLING TIP grainy grainy grainy grainy grainy
+            <div className="bg-gray-50 p-8 rounded-sm border border-gray-100 mb-12 md:cursor-none">
+              <h4 className="text-sm font-bold tracking-widest mb-6 flex items-center gap-2 md:cursor-none">
+                <MessageSquare className="w-4 h-4 md:cursor-none" /> 
+                DE:SELECT STYLING TIP
               </h4>
               
               {selectedQna.reply && !isEditingReply ? (
-                <div className="md:cursor-none grainy grainy grainy grainy grainy grainy">
-                  <p className="text-base leading-relaxed text-gray-300 grainy grainy grainy whitespace-pre-wrap md:cursor-none grainy grainy grainy grainy">{selectedQna.reply} grainy grainy grainy</p>
+                <div className="md:cursor-none">
+                  <p className="text-base leading-relaxed text-gray-700 whitespace-pre-wrap md:cursor-none">{selectedQna.reply}</p>
                   
                   {isAdmin && (
-                    <div className="flex gap-4 justify-end mt-6 border-t border-white/10 grainy grainy pt-4 md:cursor-none grainy grainy grainy grainy">
+                    <div className="flex gap-4 justify-end mt-6 border-t border-gray-100 pt-4 md:cursor-none">
                       <button 
                         onClick={() => { setAdminReply(selectedQna.reply); setIsEditingReply(true); }} 
-                        className="text-xs font-bold text-gray-500 grainy hover:text-white grainy transition-colors md:cursor-none outline-none grainy tracking-widest uppercase"
+                        className="text-xs font-bold text-gray-400 hover:text-black transition-colors md:cursor-none outline-none tracking-widest uppercase"
                       >
-                        EDIT REPLY grainy grainy grainy
+                        EDIT REPLY
                       </button>
                       <button 
                         onClick={handleDeleteReply} 
-                        className="text-xs font-bold text-red-500 grainy hover:text-red-700 grainy transition-colors md:cursor-none outline-none grainy tracking-widest uppercase"
+                        className="text-xs font-bold text-red-500 hover:text-red-700 transition-colors md:cursor-none outline-none tracking-widest uppercase"
                       >
-                        DELETE REPLY grainy grainy grainy grainy
+                        DELETE REPLY
                       </button>
                     </div>
                   )}
                 </div>
               ) : isAdmin ? (
-                <form onSubmit={handleAdminReply} className="flex flex-col gap-4 md:cursor-none grainy grainy grainy grainy grainy grainy">
+                <form onSubmit={handleAdminReply} className="flex flex-col gap-4 md:cursor-none">
                   <textarea 
-                    placeholder="운영자님, 이 제품에 대한 스타일링 팁을 작성해주세요. grainy grainy grainy grainy"
+                    placeholder="운영자님, 이 제품에 대한 스타일링 팁을 작성해주세요."
                     value={adminReply}
                     onChange={(e) => setAdminReply(e.target.value)}
                     rows={5}
-                    className="w-full border border-white/10 bg-gray-950 text-white grainy outline-none grainy grainy grainy grainy grainy p-4 text-sm transition-colors resize-none rounded-sm select-text grainy grainy grainy"
+                    className="w-full border border-gray-300 focus:border-black outline-none p-4 text-sm transition-colors bg-white md:cursor-none resize-none rounded-sm select-text"
                   />
-                  <div className="flex justify-end gap-4 md:cursor-none grainy grainy grainy grainy grainy grainy">
+                  <div className="flex justify-end gap-4 md:cursor-none">
                     {isEditingReply && (
                       <button 
                         type="button" 
                         onClick={() => { setIsEditingReply(false); setAdminReply(''); }} 
-                        className="px-6 py-3 bg-gray-800 text-gray-300 grainy border border-white/10 text-xs font-bold tracking-widest hover:bg-gray-700 grainy transition-colors md:cursor-none outline-none grainy grainy grainy grainy grainy grainy"
+                        className="px-6 py-3 bg-white text-gray-500 border border-gray-200 text-xs font-bold tracking-widest hover:bg-gray-50 transition-colors md:cursor-none outline-none"
                       >
-                        취소 grainy grainy
+                        취소
                       </button>
                     )}
-                    <button type="submit" className="px-6 py-3 bg-white grainy grainy text-black grainy text-xs font-bold tracking-widest hover:scale-105 grainy transition-transform md:cursor-none outline-none grainy grainy grainy grainy grainy grainy grainy">
-                      {isEditingReply ? '수정 완료 grainy grainy' : '답변 등록 grainy grainy grainy grainy grainy'}
+                    <button type="submit" className="px-6 py-3 bg-black text-white text-xs font-bold tracking-widest hover:scale-105 transition-transform md:cursor-none outline-none">
+                      {isEditingReply ? '수정 완료' : '답변 등록'}
                     </button>
                   </div>
                 </form>
               ) : (
-                <p className="text-gray-500 text-sm font-medium md:cursor-none grainy grainy grainy grainy grainy grainy grainy grainy">DE:SELECT의 스타일링 팁이 준비 중입니다. grainy grainy grainy grainy grainy grainy</p>
+                <p className="text-gray-400 text-sm font-medium md:cursor-none">DE:SELECT의 스타일링 팁이 준비 중입니다.</p>
               )}
             </div>
           </div>
@@ -1060,41 +1053,38 @@ export default function App() {
   };
 
   return (
-    <div 
-      className="min-h-screen bg-black text-white font-sans flex select-none overflow-hidden md:cursor-none"
-      style={{ backgroundImage: "url('Grain texture_13.jpeg')", backgroundSize: 'cover', backgroundAttachment: 'fixed' }}
-    >
+    <div className="min-h-screen bg-white text-black font-sans flex select-none overflow-hidden md:cursor-none">
       
-      <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-black/90 backdrop-blur-md border-b border-white/10 grainy z-[90] flex items-center justify-between px-6">
+      <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md border-b border-gray-100 z-[90] flex items-center justify-between px-6">
         {!isSearchOpen ? (
           <>
-            <button onClick={() => setIsMobileMenuOpen(true)} className="outline-none p-2 -ml-2 text-white">
-              <Menu className="w-6 h-6 text-white grainy" />
+            <button onClick={() => setIsMobileMenuOpen(true)} className="outline-none p-2 -ml-2">
+              <Menu className="w-6 h-6" />
             </button>
             <h1 
               onClick={() => { setCurrentView('home'); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} 
-              className="text-xl font-bold tracking-tight outline-none text-white grainy"
+              className="text-xl font-bold tracking-tight outline-none"
             >
-              DE:SELECT grainy grainy
+              DE:SELECT
             </h1>
-            <button onClick={() => setIsSearchOpen(true)} className="outline-none p-2 -mr-2 text-white">
-              <Search className="w-5 h-5 text-white grainy grainy" />
+            <button onClick={() => setIsSearchOpen(true)} className="outline-none p-2 -mr-2">
+              <Search className="w-5 h-5 text-black" />
             </button>
           </>
         ) : (
-          <div className="flex items-center w-full gap-3 grainy grainy">
-            <form onSubmit={handleSearch} className="flex-1 grainy grainy grainy">
+          <div className="flex items-center w-full gap-3">
+            <form onSubmit={handleSearch} className="flex-1">
               <input 
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className="w-full border-b border-white text-white outline-none bg-transparent text-sm pb-1 font-medium focus:outline-none select-text grainy grainy grainy grainy"
+                className="w-full border-b border-black outline-none bg-transparent text-sm pb-1 font-medium focus:outline-none select-text"
                 autoFocus
               />
             </form>
-            <button onClick={() => setIsSearchOpen(false)} className="outline-none p-2 -mr-2 text-white grainy">
-              <X className="w-5 h-5 text-white grainy grainy grainy" />
+            <button onClick={() => setIsSearchOpen(false)} className="outline-none p-2 -mr-2">
+              <X className="w-5 h-5 text-black" />
             </button>
           </div>
         )}
@@ -1102,75 +1092,75 @@ export default function App() {
 
       {isAuthModalOpen && (
         <div 
-          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity md:cursor-none px-4"
+          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity md:cursor-none px-4"
           onClick={() => setIsAuthModalOpen(false)} 
         >
           <div 
-            className="bg-gray-900 grainy grainy grainy p-8 md:p-10 w-full max-w-sm relative shadow-2xl border border-white/10 md:cursor-none grainy grainy"
+            className="bg-white p-8 md:p-10 w-full max-w-sm relative shadow-2xl border border-gray-200 md:cursor-none"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
               onClick={() => setIsAuthModalOpen(false)} 
-              className="absolute top-5 right-5 text-gray-500 grainy hover:text-white grainy transition md:cursor-none outline-none grainy grainy grainy"
+              className="absolute top-5 right-5 text-gray-400 hover:text-black transition md:cursor-none outline-none"
             >
-              <X className="w-5 h-5 md:cursor-none grainy grainy grainy grainy" />
+              <X className="w-5 h-5 md:cursor-none" />
             </button>
             
-            <div className="mb-8 md:mb-10 text-left md:cursor-none grainy grainy grainy grainy">
-              <h3 className="text-2xl md:text-3xl font-bold tracking-tighter leading-snug md:cursor-none grainy text-white grainy grainy grainy grainy grainy">
-                LOGIN / JOIN grainy grainy grainy
+            <div className="mb-8 md:mb-10 text-left md:cursor-none">
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tighter leading-snug md:cursor-none">
+                LOGIN / JOIN
               </h3>
             </div>
 
             {authError && (
-              <p className="text-red-500 grainy grainy grainy text-xs font-bold mb-6 bg-red-950 grainy border border-red-500/10 grainy p-3 rounded-sm md:cursor-none grainy grainy">{authError} grainy</p>
+              <p className="text-red-500 text-xs font-bold mb-6 bg-red-50 p-3 rounded-sm md:cursor-none">{authError}</p>
             )}
             
-            <form onSubmit={handleAuthSubmit} className="flex flex-col gap-6 md:cursor-none grainy grainy grainy grainy grainy grainy">
+            <form onSubmit={handleAuthSubmit} className="flex flex-col gap-6 md:cursor-none">
               <input 
                 type="email" 
-                placeholder="Email grainy grainy grainy" 
+                placeholder="Email" 
                 value={authForm.email}
                 onChange={(e) => setAuthForm({...authForm, email: e.target.value})}
-                className="w-full border-b border-white/10 bg-transparent text-white focus:border-white outline-none pb-2 text-sm transition-colorsplaceholder-gray-600 md:cursor-none grainy grainy select-text grainy"
+                className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 md:cursor-none select-text"
               />
               
               {authMode === 'signup' && (
                 <input 
                   type="text" 
-                  placeholder="Name grainy grainy" 
+                  placeholder="Name" 
                   value={authForm.name}
                   onChange={(e) => setAuthForm({...authForm, name: e.target.value})}
-                  className="w-full border-b border-white/10 bg-transparent text-white focus:border-white outline-none pb-2 text-sm transition-colorsplaceholder-gray-600 md:cursor-none grainy grainy select-text grainy"
+                  className="w-full border-b border-gray-300 focus:border-black outline-none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 md:cursor-none select-text"
                 />
               )}
 
-              <div className="relative w-full md:cursor-none grainy grainy grainy grainy">
+              <div className="relative w-full md:cursor-none">
                 <input 
                   type={showPassword ? "text" : "password"} 
-                  placeholder="Password grainy grainy grainy" 
+                  placeholder="Password" 
                   value={authForm.password}
                   onChange={(e) => setAuthForm({...authForm, password: e.target.value})}
-                  className="w-full border-b border-white/10 none bg-transparent text-white focus:border-white outline-none pb-2 text-sm transition-colorsplaceholder-gray-600 md:cursor-none grainy grainy pr-8 select-text grainy"
+                  className="w-full border-b border-gray-300 focus:border-black none pb-2 text-sm transition-colors bg-transparent placeholder-gray-400 md:cursor-none pr-8 select-text"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-0 bottom-2 text-gray-500 hover:text-white grainy transition-colors md:cursor-none outline-none grainy grainy"
+                  className="absolute right-0 bottom-2 text-gray-400 hover:text-black transition-colors md:cursor-none outline-none"
                 >
-                  {showPassword ? <Eye className="w-4 h-4 md:cursor-none grainy" /> : <EyeOff className="w-4 h-4 md:cursor-none grainy" />}
+                  {showPassword ? <Eye className="w-4 h-4 md:cursor-none" /> : <EyeOff className="w-4 h-4 md:cursor-none" />}
                 </button>
               </div>
 
               <button 
                 type="submit" 
-                className="w-full py-4 mt-4 bg-white text-black text-sm font-bold tracking-widest md:hover:scale-[1.02] grainy hover:shadow-lg transition-all duration-300 md:cursor-none outline-none grainy grainy grainy grainy grainy"
+                className="w-full py-4 mt-4 bg-black text-white text-sm font-bold tracking-widest md:hover:scale-[1.02] hover:shadow-lg transition-all duration-300 md:cursor-none outline-none"
               >
-                {authMode === 'login' ? 'SIGN IN grainy grainy' : 'CREATE ACCOUNT grainy grainy'}
+                {authMode === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT'}
               </button>
             </form>
 
-            <div className="mt-8 text-center text-xs font-bold tracking-widest text-gray-500 grainy md:cursor-none grainy grainy grainy grainy">
+            <div className="mt-8 text-center text-xs font-bold tracking-widest text-gray-400 md:cursor-none">
               <button 
                 onClick={() => {
                   setAuthMode(authMode === 'login' ? 'signup' : 'login');
@@ -1178,9 +1168,9 @@ export default function App() {
                   setAuthForm({ email: '', password: '', name: '' });
                   setShowPassword(false);
                 }}
-                className="hover:text-white transition md:cursor-none outline-none grainy uppercase grainy grainy"
+                className="hover:text-black transition md:cursor-none outline-none uppercase"
               >
-                {authMode === 'login' ? 'Create an account grainy grainy' : 'Already have an account? grainy grainy grainy grainy'}
+                {authMode === 'login' ? 'Create an account' : 'Already have an account?'}
               </button>
             </div>
           </div>
@@ -1189,39 +1179,39 @@ export default function App() {
 
       {isLogoutModalOpen && (
         <div 
-          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity md:cursor-none px-4"
+          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity md:cursor-none px-4"
           onClick={() => setIsLogoutModalOpen(false)} 
         >
           <div 
-            className="bg-gray-900 grainy grainy grainy p-8 w-full max-w-xs relative shadow-2xl border border-white/10 md:cursor-none grainy grainy grainy grainy"
+            className="bg-white p-8 w-full max-w-xs relative shadow-2xl border border-gray-200 md:cursor-none"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
               onClick={() => setIsLogoutModalOpen(false)} 
-              className="absolute top-4 right-4 text-gray-500 grainy hover:text-white grainy transition md:cursor-none outline-none grainy grainy grainy grainy"
+              className="absolute top-4 right-4 text-gray-400 hover:text-black transition md:cursor-none outline-none"
             >
-              <X className="w-5 h-5 md:cursor-none grainy grainy grainy grainy" />
+              <X className="w-5 h-5 md:cursor-none" />
             </button>
             
-            <div className="mb-8 text-left md:cursor-none grainy grainy grainy grainy">
-              <h3 className="text-2xl font-bold tracking-tighter leading-snug md:cursor-none grainy text-white grainy grainy grainy grainy grainy grainy">
-                Do you want grainy grainy grainy grainy <br /> to logout? grainy grainy grainy grainy grainy
+            <div className="mb-8 text-left md:cursor-none">
+              <h3 className="text-2xl font-bold tracking-tighter leading-snug md:cursor-none">
+                Do you want <br /> to logout?
               </h3>
             </div>
             
-            <div className="flex flex-col gap-3 md:cursor-none grainy grainy grainy grainy grainy">
+            <div className="flex flex-col gap-3 md:cursor-none">
               <button 
                 onClick={confirmLogout} 
-                className="w-full py-4 bg-white text-black text-sm font-bold tracking-widest hover:scale-105 grainy hover:shadow-lg transition-all duration-300 md:cursor-none outline-none grainy grainy grainy grainy grainy"
+                className="w-full py-4 bg-black text-white text-sm font-bold tracking-widest hover:scale-105 hover:shadow-lg transition-all duration-300 md:cursor-none outline-none"
               >
-                CONTINUE grainy grainy grainy grainy
+                CONTINUE
               </button>
               
               <button 
                 onClick={() => setIsLogoutModalOpen(false)} 
-                className="w-full py-4 bg-gray-800 text-gray-300 grainy grainy border border-white/10 text-sm font-bold tracking-widest hover:bg-gray-700 grainy transition-all duration-300 md:cursor-none outline-none grainy grainy grainy grainy grainy grainy"
+                className="w-full py-4 bg-white text-gray-500 text-sm font-bold tracking-widest border border-gray-200 hover:bg-gray-50 hover:text-black transition-all duration-300 md:cursor-none outline-none"
               >
-                CANCEL grainy grainy grainy grainy grainy
+                CANCEL
               </button>
             </div>
           </div>
@@ -1230,75 +1220,75 @@ export default function App() {
 
       {isModalOpen && (
         <div 
-          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity md:cursor-none px-4"
+          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity md:cursor-none px-4"
           onClick={() => setIsModalOpen(false)} 
         >
           <div 
-            className="bg-gray-900 grainy grainy grainy p-8 w-full max-w-xs relative shadow-2xl border border-white/10 md:cursor-none grainy grainy grainy grainy grainy"
+            className="bg-white p-8 w-full max-w-xs relative shadow-2xl border border-gray-200 md:cursor-none"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
               onClick={() => setIsModalOpen(false)} 
-              className="absolute top-4 right-4 text-gray-500 grainy hover:text-white grainy transition md:cursor-none outline-none grainy grainy grainy grainy grainy"
+              className="absolute top-4 right-4 text-gray-400 hover:text-black transition md:cursor-none outline-none"
             >
-              <X className="w-5 h-5 md:cursor-none grainy grainy grainy grainy grainy" />
+              <X className="w-5 h-5 md:cursor-none" />
             </button>
             
-            <div className="mb-8 text-left md:cursor-none grainy grainy grainy grainy grainy">
-              <h3 className="text-2xl font-bold tracking-tighter leading-snug md:cursor-none grainy text-white grainy grainy grainy grainy grainy grainy">
-                Redirecting to the grainy grainy grainy grainy grainy grainy <br /> official brand store. grainy grainy grainy grainy grainy grainy grainy
+            <div className="mb-8 text-left md:cursor-none">
+              <h3 className="text-2xl font-bold tracking-tighter leading-snug md:cursor-none">
+                Redirecting to the <br /> official brand store.
               </h3>
-              <p className="text-sm text-gray-400 grainy grainy grainy mt-3 md:cursor-none grainy grainy grainy grainy grainy">Opens in a new tab. grainy grainy grainy grainy</p>
+              <p className="text-sm text-gray-500 mt-3 md:cursor-none">Opens in a new tab.</p>
             </div>
             
-            <div className="flex flex-col gap-3 md:cursor-none grainy grainy grainy grainy grainy grainy grainy">
+            <div className="flex flex-col gap-3 md:cursor-none">
               <button 
                 onClick={() => {
                   window.open(targetLink, '_blank', 'noopener,noreferrer');
                   setIsModalOpen(false);
                 }} 
-                className="w-full py-4 bg-white text-black text-sm font-bold tracking-widest hover:scale-105 grainy grainy hover:shadow-lg transition-all duration-300 flex justify-between items-center grainy grainy grainy grainy grainy grainy Grain texture_13.jpeg md:cursor-none outline-none grainy grainy grainy"
+                className="w-full py-4 bg-black text-white text-sm font-bold tracking-widest hover:scale-105 hover:shadow-lg transition-all duration-300 flex justify-between items-center px-6 md:cursor-none outline-none"
               >
-                <span className="md:cursor-none grainy grainy grainy">CONTINUE Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg</span>
-                <span className="md:cursor-none grainy grainy grainy">→ grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy</span>
+                <span className="md:cursor-none">CONTINUE</span>
+                <span className="md:cursor-none">→</span>
               </button>
               
               <button 
                 onClick={() => setIsModalOpen(false)} 
-                className="w-full py-4 bg-gray-800 text-gray-300 grainy border border-white/10 grainy text-sm font-bold tracking-widest hover:bg-gray-700 grainy grainy grainy grainy transition-all duration-300 md:cursor-none outline-none grainy grainy grainy grainy"
+                className="w-full py-4 bg-white text-gray-500 text-sm font-bold tracking-widest border border-gray-200 hover:bg-gray-50 hover:text-black transition-all duration-300 md:cursor-none outline-none"
               >
-                CANCEL Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy
+                CANCEL
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="hidden md:block fixed top-0 left-0 w-2 h-2 bg-white rounded-full z-[9999] pointer-events-none mix-blend-difference md:cursor-none Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy grainy" style={{ transform: `translate(${mousePos.x - 4}px, ${mousePos.y - 4}px)` }} />
-      <div className="hidden md:block fixed top-0 left-0 w-8 h-8 bg-white rounded-full z-[9998] pointer-events-none mix-blend-difference transition-transform duration-150 ease-out md:cursor-none Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg" style={{ transform: `translate(${mousePos.x - 16}px, ${mousePos.y - 16}px)` }} />
+      <div className="hidden md:block fixed top-0 left-0 w-2 h-2 bg-white rounded-full z-[9999] pointer-events-none mix-blend-difference md:cursor-none" style={{ transform: `translate(${mousePos.x - 4}px, ${mousePos.y - 4}px)` }} />
+      <div className="hidden md:block fixed top-0 left-0 w-8 h-8 bg-white rounded-full z-[9998] pointer-events-none mix-blend-difference transition-transform duration-150 ease-out md:cursor-none" style={{ transform: `translate(${mousePos.x - 16}px, ${mousePos.y - 16}px)` }} />
 
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/20 z-[95] backdrop-blur-sm Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy" onClick={() => setIsMobileMenuOpen(false)} />
+        <div className="md:hidden fixed inset-0 bg-black/20 z-[95] backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
-      <aside className={`fixed top-0 left-0 h-screen w-64 bg-gray-950 grainy border-r border-white/5 grainy p-8 md:p-10 flex flex-col z-[100] transition-transform duration-300 ease-in-out md:translate-x-0 Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:cursor-none grainy Grain texture_13.jpeg`}>
+      <aside className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-100 p-8 md:p-10 flex flex-col z-[100] transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:cursor-none`}>
         
-        <div className="md:cursor-none grainy grainy grainy grainy grainy grainy grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy shrink-0 grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg">
-          <div className="flex justify-between items-center mb-12 md:cursor-none grainy grainy grainy grainy grainy grainy grainy Grain texture_13.jpeg grainy grainy grainy grainy Grain texture_13.jpeg grainy grainy grainy">
-            <h1 onClick={() => { setCurrentView('home'); setIsProductMenuOpen(false); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} className="text-3xl font-bold tracking-tight md:cursor-none text-white grainy Grain texture_13.jpeg grainy hover:text-gray-400 transition grainy outline-none grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg">DE:SELECT Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy grainy grainy Grain texture_13.jpeg grainy grainy grainy</h1>
-            <button className="md:hidden outline-none p-2 -mr-2 md:cursor-none text-white Grain texture_13.jpeg grainy grainy grainy grainy grainy grainy grainy grainy grainy grainy grainy grainy grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg" onClick={() => setIsMobileMenuOpen(false)}>
-              <X className="w-5 h-5 text-white grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg" />
+        <div className="md:cursor-none shrink-0">
+          <div className="flex justify-between items-center mb-12 md:cursor-none">
+            <h1 onClick={() => { setCurrentView('home'); setIsProductMenuOpen(false); setSelectedBrand(''); setSelectedCategory('All'); setSelectedSubCategory('All'); setIsSearchOpen(false); setIsMobileMenuOpen(false); }} className="text-3xl font-bold tracking-tight md:cursor-none hover:text-gray-400 transition outline-none">DE:SELECT</h1>
+            <button className="md:hidden outline-none p-2 -mr-2 md:cursor-none" onClick={() => setIsMobileMenuOpen(false)}>
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto flex flex-col justify-between pb-4 grainy Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg">
-          <nav className="flex flex-col gap-5 md:gap-4 font-semibold text-lg tracking-tight md:cursor-none text-white grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg">
-            <button onClick={() => { setCurrentView('brands'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition text-white grainy outline-none Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg ${currentView === 'brands' ? 'text-gray-400' : 'text-white hover:text-gray-400 grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy grainy grainy'}`}>Brands grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg</button>
-            <div className="md:cursor-none grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg">
-              <button onClick={() => setIsProductMenuOpen(!isProductMenuOpen)} className="flex items-center justify-between w-full md:cursor-none text-white transition grainy text-white hover:text-gray-400 outline-none md:cursor-none Grain texture_13.jpeg grainy grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg"><span className="md:cursor-none text-white grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg">Product grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy</span></button>
-              <div className={`grid transition-all duration-300 ease-in-out md:cursor-none grainy Grain texture_13.jpeg grainy grainy grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy ${isProductMenuOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 mt-0 Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy'}`}>
-                <div className="overflow-hidden flex flex-col gap-4 md:gap-3 ml-4 text-sm md:text-sm font-medium md:cursor-none text-white grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg">
+        <div className="flex-1 overflow-y-auto flex flex-col justify-between pb-4">
+          <nav className="flex flex-col gap-5 md:gap-4 font-semibold text-lg tracking-tight md:cursor-none">
+            <button onClick={() => { setCurrentView('brands'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'brands' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Brands</button>
+            <div className="md:cursor-none">
+              <button onClick={() => setIsProductMenuOpen(!isProductMenuOpen)} className="flex items-center justify-between w-full md:cursor-none transition text-black hover:text-gray-400 outline-none md:cursor-none"><span className="md:cursor-none">Product</span></button>
+              <div className={`grid transition-all duration-300 ease-in-out md:cursor-none ${isProductMenuOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 mt-0'}`}>
+                <div className="overflow-hidden flex flex-col gap-4 md:gap-3 ml-4 text-sm md:text-sm font-medium md:cursor-none">
                   {categories.map(cat => (
                     <button 
                       key={cat} 
@@ -1308,23 +1298,23 @@ export default function App() {
                         setCurrentView('category'); 
                         setIsMobileMenuOpen(false);
                       }} 
-                      className={`text-left md:cursor-none text-white transition grainy outline-none Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg py-1 md:py-0 grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg ${selectedCategory === cat && currentView === 'category' ? 'text-gray-400 grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg' : 'text-white grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg hover:text-gray-400 grainy Grain texture_13.jpeg'}`}
+                      className={`text-left md:cursor-none transition outline-none py-1 md:py-0 ${selectedCategory === cat && currentView === 'category' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}
                     >
-                      {cat} grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg
+                      {cat}
                     </button>
                   ))}
                 </div>
               </div>
             </div>
-            <button onClick={() => { setCurrentView('about'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none text-white transition grainy outline-none Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg ${currentView === 'about' ? 'text-gray-400' : 'text-white hover:text-gray-400 grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy grainy'}`}>About Us grainy grainy grainy grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy</button>
-            <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left transition text-white none md:cursor-none Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg ${currentView === 'customer' ? 'text-gray-400 grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg' : 'text-white hover:text-gray-400 grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy'}`}>Styling Q&A grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg</button>
+            <button onClick={() => { setCurrentView('about'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left md:cursor-none transition outline-none ${currentView === 'about' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>About Us</button>
+            <button onClick={() => { setCurrentView('customer'); setIsProductMenuOpen(false); setIsMobileMenuOpen(false); }} className={`text-left transition outline-none md:cursor-none ${currentView === 'customer' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}>Styling Q&A</button>
           </nav>
 
-          <div className="flex flex-col gap-4 mt-8 pt-4 border-t border-white/5 grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy shrink-0 Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg">
+          <div className="flex flex-col gap-4 mt-8 pt-4 border-t border-gray-100 md:cursor-none shrink-0">
             <button 
               onClick={() => { 
                 if (!currentUser) {
-                  alert("로그인이 필요한 기능입니다. Grain texture_13.jpeg grainy");
+                  alert("로그인이 필요한 기능입니다.");
                   setIsAuthModalOpen(true);
                   return;
                 }
@@ -1332,82 +1322,79 @@ export default function App() {
                 setIsProductMenuOpen(false); 
                 setIsMobileMenuOpen(false);
               }} 
-              className={`font-semibold text-white tracking-tight text-lg text-left md:cursor-none text-white transition none mb-4 Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg ${currentView === 'mypage' ? 'text-gray-400 Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg' : 'text-white hover:text-gray-400 grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg'}`}
+              className={`font-semibold text-lg tracking-tight text-left md:cursor-none transition outline-none mb-4 ${currentView === 'mypage' ? 'text-gray-400' : 'text-black hover:text-gray-400'}`}
             >
-              My Page grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy
+              My Page
             </button>
             
-            <div className="md:hidden mt-2 flex flex-col items-start md:cursor-none grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg">
+            <div className="md:hidden mt-2 flex flex-col items-start md:cursor-none">
               {currentUser ? (
                  <button 
                    onClick={() => { setIsLogoutModalOpen(true); setIsMobileMenuOpen(false); }}
-                   className="font-bold text-xs text-gray-500 grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg border-b border-gray-600 grainy pb-0.5 uppercase grainy tracking-widest grainy none transition-colors Grain texture_13.jpeg grainy Grain texture_13.jpeg md:cursor-none grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg"
+                   className="font-bold text-xs text-gray-400 border-b border-gray-400 pb-0.5 uppercase tracking-widest outline-none transition-colors md:cursor-none"
                  >
-                   LOGOUT Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg
+                   LOGOUT
                  </button>
               ) : (
                  <button 
                    onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
-                   className="font-bold text-xs text-white grainy border-b Grain texture_13.jpeg grainy border-white/20 grainy pb-0.5 uppercase grainy grainy Grain texture_13.jpeg tracking-widest grainy none transition-colors Grain texture_13.jpeg grainy Grain texture_13.jpeg md:cursor-none Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg"
+                   className="font-bold text-xs text-black border-b border-black pb-0.5 uppercase tracking-widest outline-none transition-colors md:cursor-none"
                  >
-                   LOGIN / JOIN grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg
+                   LOGIN / JOIN
                  </button>
               )}
             </div>
           </div>
         </div>
         
-        <div className="hidden md:flex items-center gap-3 md:cursor-none shrink-0 pt-8 overflow-hidden Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg">
-          <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="none md:cursor-none text-white Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg">
-            <Search className="w-5 h-5 md:cursor-none text-white Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg hover:text-gray-400 transition none grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg" />
+        <div className="hidden md:flex items-center gap-3 md:cursor-none shrink-0 pt-8 overflow-hidden">
+          <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="outline-none md:cursor-none">
+            <Search className="w-5 h-5 md:cursor-none text-black hover:text-gray-400 transition outline-none" />
           </button>
-          <form onSubmit={handleSearch} className={`flex-1 md:cursor-none transition-all none text-white none md:cursor-none none Grain texture_13.jpeg grainy grainy grainy grainy Grain texture_13.jpeg grainy grainy grainy ${isSearchOpen ? 'w-full opacity-100' : 'w-0 opacity-0 none text-white none md:cursor-none none Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy'}`}>
+          <form onSubmit={handleSearch} className={`flex-1 md:cursor-none transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-full opacity-100' : 'w-0 opacity-0'}`}>
             <input 
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search... Grain texture_13.jpeg"
-              className="w-full border-b border-white/20 grainy outline-none grainy grainy bg-transparent text-white text-sm pb-1 font-medium grainy Grain texture_13.jpeg Grain texture_13.jpeg md:cursor-none Grain texture_13.jpeg Grain texture_13.jpeg grainy focus:outline-none select-text grainy grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy"
+              placeholder="Search..."
+              className="w-full border-b border-black outline-none bg-transparent text-sm pb-1 font-medium md:cursor-none focus:outline-none select-text"
               autoFocus={isSearchOpen}
             />
           </form>
         </div>
       </aside>
 
-      <main ref={mainRef} className="md:ml-64 w-full h-screen overflow-y-auto flex flex-col p-6 pt-24 md:p-10 relative scroll-smooth md:cursor-none Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg">
+      <main ref={mainRef} className="md:ml-64 w-full h-screen overflow-y-auto flex flex-col p-6 pt-24 md:p-10 relative scroll-smooth md:cursor-none">
         
-        {/* main 영역 그래디언트 오버레이 */}
-        <div className="absolute inset-0 Grain texture_13.jpeg grainy pointer-events-none z-0" style={{ background: 'radial-gradient(circle at 100% 0%, #333 0%, rgba(0,0,0,0) 70%)', opacity: 0.2 }}></div>
-
-        <div className="hidden md:block grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg">
+        <div className="hidden md:block">
           {currentUser ? (
-            <div className="absolute top-10 right-10 z-40 flex flex-col items-end none Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy md:cursor-none Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg">
-              <span className="font-bold text-xs tracking-tight text-white grainy md:cursor-none grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg">
-                {currentUser.user_metadata?.name || 'Guest grainy'} 님 grainy Grain texture_13.jpeg
+            <div className="absolute top-10 right-10 z-40 flex flex-col items-end gap-1 md:cursor-none">
+              <span className="font-bold text-xs tracking-tight text-black md:cursor-none">
+                {currentUser.user_metadata?.name || 'Guest'} 님
               </span>
               <button 
                 onClick={() => setIsLogoutModalOpen(true)}
-                className="font-bold text-xs tracking-tight text-gray-500 grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy hover:text-white grainy grainy transition none Grain texture_13.jpeg grainy border-b none grainy Grain texture_13.jpeg grainy none none grainy border-gray-600 grainy grainy hover:border-white grainy none none grainy text-white uppercase Grain texture_13.jpeg md:cursor-none grainy Grain texture_13.jpeg grainy"
+                className="font-bold text-xs tracking-tight text-gray-400 hover:text-black transition border-b border-gray-400 hover:border-black pb-0.5 outline-none uppercase md:cursor-none"
               >
-                LOGOUT grainy Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy
+                LOGOUT
               </button>
             </div>
           ) : (
             <button 
               onClick={() => setIsAuthModalOpen(true)}
-              className="absolute top-10 right-10 none Grain texture_13.jpeg grainy z-50 text-white none text-xs font-bold none grainy tracking-tight none grainy Grain texture_13.jpeg Grain texture_13.jpeg hover:text-gray-400 none transition border-b Grain texture_13.jpeg grainy none none none border-white none grainy none none none grainy Grain texture_13.jpeg Grain texture_13.jpeg uppercase md:cursor-none grainy grainy Grain texture_13.jpeg grainy"
+              className="absolute top-10 right-10 font-bold text-xs z-50 tracking-tight text-black hover:text-gray-400 transition border-b border-black hover:border-gray-400 pb-0.5 outline-none uppercase md:cursor-none"
             >
-              LOGIN / JOIN grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg grainy
+              LOGIN / JOIN
             </button>
           )}
         </div>
 
-        <div className="flex-1 md:cursor-none grainy relative z-10 Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg">{renderContent()}</div>
+        <div className="flex-1 md:cursor-none">{renderContent()}</div>
         
-        <footer className="mt-32 pt-8 border-t border-white/10 grainy relative z-10 flex none Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg">
-          <div className="text-left md:cursor-none text-white none Grain texture_13.jpeg grainy grainy grainy grainy grainy grainy grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg">
-            <p className="text-xl font-bold tracking-tighter text-white grainy Grain texture_13.jpeg none Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy">DE:SELECT grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg</p>
-            <p className="text-xs text-gray-500 Grain texture_13.jpeg none text-gray-500 font-medium Grain texture_13.jpeg none tracking-tight grainy grainy grainy grainy Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg grainy Grain texture_13.jpeg">The New Standard of Curation. Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg Grain texture_13.jpeg Grain texture_13.jpeg grainy Grain texture_13.jpeg</p>
+        <footer className="mt-32 pt-8 border-t border-black flex pb-12 md:cursor-none">
+          <div className="text-left md:cursor-none">
+            <p className="text-xl font-bold tracking-tighter text-black mb-1 md:cursor-none">DE:SELECT</p>
+            <p className="text-xs text-gray-500 font-medium tracking-tight md:cursor-none">The New Standard of Curation.</p>
           </div>
         </footer>
       </main>
