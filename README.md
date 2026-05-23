@@ -9,7 +9,7 @@ DE:SELECT는 브랜드와 카테고리별 패션 제품을 큐레이션하고, �
 
 ## 배포 링크
 
-추후 추가 예정
+https://deselect.vercel.app/
 
 ## 기술 스택
 
