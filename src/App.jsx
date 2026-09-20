@@ -444,7 +444,7 @@ export default function App() {
       case 'mypage':
         return <MyPage currentUser={currentUser} onLiked={() => { setCurrentView('liked'); setLikedTab('products'); }} />;
       case 'liked':
-        return <Liked products={products} likedProductIds={likedProductIds} favoriteBrands={favoriteBrands} likedTab={likedTab} sortOption={sortOption} onTabChange={setLikedTab} onSortChange={setSortOption} onProductClick={handleProductClick} onToggleLike={toggleLike} onToggleFavoriteBrand={toggleFavoriteBrand} onSelectBrand={selectBrand} />;
+        return <Liked products={products} likedProductIds={likedProductIds} favoriteBrands={favoriteBrands} likedTab={likedTab} sortOption={sortOption} brandSortOption={brandSortOption} onTabChange={setLikedTab} onSortChange={setSortOption} onBrandSortChange={setBrandSortOption} onProductClick={handleProductClick} onToggleLike={toggleLike} onToggleFavoriteBrand={toggleFavoriteBrand} onSelectBrand={selectBrand} />;
       case 'customer':
         return <Customer qnaList={qnaList} currentUser={currentUser} onRequireWrite={requireQnaWrite} onSelectQna={(qna) => { setSelectedQna(qna); setIsEditingReply(false); setCurrentView('qnaDetail'); }} />;
       case 'qnaWrite':

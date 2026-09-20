@@ -41,10 +41,9 @@ export function SearchPage({
       {searchTab === 'brand' ? (
         sortedSearchBrands.length > 0 ? <BrandList brands={sortedSearchBrands} onSelectBrand={onSelectBrand} /> : <p className="text-gray-400 mt-10 md:cursor-none">검색 결과가 없습니다.</p>
       ) : (
-        <>
-          <ProductGrid items={sortedSearchProducts} likedProductIds={likedProductIds} onProductClick={onProductClick} onToggleLike={onToggleLike} onSelectBrand={onSelectBrand} />
-          {sortedSearchProducts.length === 0 && <p className="text-gray-400 mt-10 md:cursor-none">검색 결과가 없습니다.</p>}
-        </>
+        sortedSearchProducts.length > 0
+          ? <ProductGrid items={sortedSearchProducts} likedProductIds={likedProductIds} onProductClick={onProductClick} onToggleLike={onToggleLike} onSelectBrand={onSelectBrand} />
+          : <p className="text-gray-400 mt-10 md:cursor-none">검색 결과가 없습니다.</p>
       )}
     </div>
   );

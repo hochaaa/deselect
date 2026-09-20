@@ -1,7 +1,7 @@
 import { Heart } from 'lucide-react';
 import { ProductGrid } from '../components/Product/ProductGrid';
-import { SortDropdown } from '../components/Product/SortDropdown';
-import { sortProducts } from '../utils/sort';
+import { BrandSortDropdown, SortDropdown } from '../components/Product/SortDropdown';
+import { sortBrands, sortProducts } from '../utils/sort';
 
 export function Liked({
   products,
@@ -9,8 +9,10 @@ export function Liked({
   favoriteBrands,
   likedTab,
   sortOption,
+  brandSortOption,
   onTabChange,
   onSortChange,
+  onBrandSortChange,
   onProductClick,
   onToggleLike,
   onToggleFavoriteBrand,
@@ -18,6 +20,7 @@ export function Liked({
 }) {
   const wishlistProds = products.filter((p) => likedProductIds.includes(p.id));
   const sortedWishlistProds = sortProducts(wishlistProds, sortOption);
+  const sortedFavoriteBrands = sortBrands(favoriteBrands, brandSortOption);
 
   return (
     <div className="mt-32 w-full md:cursor-none">
@@ -29,11 +32,9 @@ export function Liked({
           <button onClick={() => onTabChange('products')} className={`${likedTab === 'products' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>Product</button>
           <button onClick={() => onTabChange('brands')} className={`${likedTab === 'brands' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>Brand</button>
         </div>
-        {likedTab === 'products' && (
-          <div className="flex justify-start md:justify-end md:cursor-none">
-            <SortDropdown value={sortOption} onChange={onSortChange} />
-          </div>
-        )}
+        <div className="flex justify-start md:justify-end md:cursor-none">
+          {likedTab === 'products' ? <SortDropdown value={sortOption} onChange={onSortChange} /> : <BrandSortDropdown value={brandSortOption} onChange={onBrandSortChange} />}
+        </div>
       </div>
 
       {likedTab === 'products' && (
@@ -51,7 +52,7 @@ export function Liked({
       {likedTab === 'brands' && (
         <>
           <ul className="flex flex-col gap-6 text-2xl md:text-4xl font-medium tracking-tighter mt-8 md:cursor-none">
-            {favoriteBrands.map((brand) => (
+            {sortedFavoriteBrands.map((brand) => (
               <li key={brand} className="flex items-center gap-5 group border-b border-gray-50 pb-6 md:cursor-none">
                 <button onClick={() => onSelectBrand(brand)} className="hover:text-gray-400 transition md:cursor-none text-left outline-none">
                   {brand}
