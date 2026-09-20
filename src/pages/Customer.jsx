@@ -1,5 +1,7 @@
 import { MessageSquare } from 'lucide-react';
+import { QnaProductSummary } from '../components/Qna/QnaProductSummary';
 import { QnaStatusBadge } from '../components/Qna/QnaStatusBadge';
+import { findProductById } from '../utils/product';
 
 export function Customer({ qnaList, products, currentUser, onRequireWrite, onSelectQna }) {
   return (
@@ -20,7 +22,7 @@ export function Customer({ qnaList, products, currentUser, onRequireWrite, onSel
 
       <div className="flex flex-col md:cursor-none">
         {qnaList.map((qna) => {
-          const product = products.find((p) => p.id === qna.product_id);
+          const product = findProductById(products, qna.product_id);
           return (
             <button
               key={qna.id}
@@ -30,7 +32,7 @@ export function Customer({ qnaList, products, currentUser, onRequireWrite, onSel
               <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 flex-1 md:cursor-none">
                 <QnaStatusBadge hasReply={Boolean(qna.reply)} />
                 <div className="flex flex-col md:cursor-none">
-                  <span className="text-xs text-gray-400 font-mono uppercase mb-1 md:cursor-none">{product?.brand}</span>
+                  <QnaProductSummary product={product} productId={qna.product_id} compact />
                   <h4 className="font-bold text-lg md:cursor-none">{qna.title}</h4>
                 </div>
               </div>

@@ -1,4 +1,8 @@
+import { useEffect, useState } from 'react';
 import { MessageSquare } from 'lucide-react';
+import { QnaProductSummary } from '../components/Qna/QnaProductSummary';
+import { findProductById } from '../utils/product';
+import { supabase } from '../supabase';
 
 export function QnaDetail({
   selectedQna,
@@ -15,9 +19,24 @@ export function QnaDetail({
   onAdminReplySubmit,
   onCancelEditReply,
 }) {
+  const [fetchedProduct, setFetchedProduct] = useState(null);
+  const [imageFailed, setImageFailed] = useState(false);
+  const productId = selectedQna?.product_id;
+  const listedProduct = findProductById(products, productId);
+
+  useEffect(() => {
+    if (listedProduct || productId === null || productId === undefined) return;
+
+    let active = true;
+    supabase.from('products').select('*').eq('id', productId).maybeSingle().then(({ data }) => {
+      if (active) setFetchedProduct(data);
+    });
+    return () => { active = false; };
+  }, [listedProduct, productId]);
+
   if (!selectedQna) return null;
 
-  const qnaProduct = products.find((p) => p.id === selectedQna.product_id);
+  const qnaProduct = listedProduct || findProductById([fetchedProduct].filter(Boolean), productId);
 
   return (
     <div className="mt-32 w-full max-w-4xl mx-auto md:cursor-none">
@@ -43,18 +62,23 @@ export function QnaDetail({
         </div>
       </div>
 
-      {qnaProduct && (
-        <div className="flex items-center gap-6 p-6 bg-gray-50 border border-gray-100 mb-12 rounded-sm md:cursor-none hover:border-gray-300 transition-colors" onClick={() => onSelectProductBrand(qnaProduct.brand)}>
+      <div
+        className={`flex items-center gap-6 p-6 bg-gray-50 border border-gray-100 mb-12 rounded-sm md:cursor-none transition-colors ${qnaProduct ? 'hover:border-gray-300' : ''}`}
+        onClick={() => {
+          if (qnaProduct) onSelectProductBrand(qnaProduct.brand);
+        }}
+      >
+        {qnaProduct && (
           <div className="w-24 h-32 bg-white md:cursor-none shrink-0">
-            <img src={qnaProduct.img} alt={qnaProduct.name} className="w-full h-full object-contain md:cursor-none" />
+            {qnaProduct.img && !imageFailed ? (
+              <img src={qnaProduct.img} alt={qnaProduct.name} onError={() => setImageFailed(true)} className="w-full h-full object-contain md:cursor-none" />
+            ) : (
+              <span className="flex h-full items-center justify-center text-xs text-gray-400">이미지 없음</span>
+            )}
           </div>
-          <div className="flex flex-col md:cursor-none">
-            <span className="text-xs text-gray-500 font-mono uppercase mb-2 md:cursor-none">{qnaProduct.brand}</span>
-            <span className="text-lg font-bold mb-1 md:cursor-none">{qnaProduct.name}</span>
-            <span className="text-sm font-bold text-gray-600 md:cursor-none">{qnaProduct.price}</span>
-          </div>
-        </div>
-      )}
+        )}
+        <QnaProductSummary product={qnaProduct} productId={selectedQna.product_id} />
+      </div>
 
       <div className="min-h-[150px] text-lg leading-relaxed text-gray-800 whitespace-pre-wrap mb-16 md:cursor-none">
         {selectedQna.content}
