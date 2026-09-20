@@ -29,13 +29,15 @@ export function Liked({
           <button onClick={() => onTabChange('products')} className={`${likedTab === 'products' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>Product</button>
           <button onClick={() => onTabChange('brands')} className={`${likedTab === 'brands' ? 'text-black' : 'hover:text-black'} transition md:cursor-none outline-none`}>Brand</button>
         </div>
+        {likedTab === 'products' && (
+          <div className="flex justify-start md:justify-end md:cursor-none">
+            <SortDropdown value={sortOption} onChange={onSortChange} />
+          </div>
+        )}
       </div>
 
       {likedTab === 'products' && (
         <>
-          <div className="flex justify-end mb-8 md:cursor-none">
-            <SortDropdown value={sortOption} onChange={onSortChange} />
-          </div>
           <ProductGrid items={sortedWishlistProds} likedProductIds={likedProductIds} onProductClick={onProductClick} onToggleLike={onToggleLike} onSelectBrand={onSelectBrand} />
           {sortedWishlistProds.length === 0 && (
             <div className="text-center py-20 md:cursor-none">

@@ -300,7 +300,7 @@ export default function App() {
 
     setSearchedBrands(matchedBrands);
     setSearchedProducts(matchedProducts);
-    setSearchTab(matchedBrands.length > 0 ? 'brand' : 'product');
+    setSearchTab(matchedBrands.length > 0 || matchedProducts.length === 0 ? 'brand' : 'product');
     setCurrentView('search');
     setIsSearchOpen(false);
     setSearchQuery('');

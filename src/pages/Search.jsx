@@ -26,11 +26,11 @@ export function SearchPage({
         <h2 className="text-4xl md:text-5xl font-bold tracking-tighter md:cursor-none">SEARCH</h2>
       </div>
       <div className="flex flex-col sm:flex-row justify-between sm:items-end border-b border-gray-200 pb-4 mb-8 min-h-[2.5rem] md:cursor-none gap-4">
-        <div role="tablist" aria-label="검색 결과" className="flex items-center gap-6">
-          <button type="button" role="tab" aria-selected={searchTab === 'brand'} onClick={() => onSearchTabChange('brand')} className={`text-sm font-bold transition-colors md:cursor-none outline-none ${searchTab === 'brand' ? 'text-black border-b-2 border-black pb-1' : 'text-gray-400 hover:text-black pb-1'}`}>
+        <div role="tablist" aria-label="검색 결과" className="flex items-center gap-6 text-sm font-semibold text-gray-400">
+          <button type="button" role="tab" aria-selected={searchTab === 'brand'} onClick={() => onSearchTabChange('brand')} className={`${searchTab === 'brand' ? 'text-black' : 'hover:text-black'} transition-colors md:cursor-none outline-none`}>
             Brand
           </button>
-          <button type="button" role="tab" aria-selected={searchTab === 'product'} onClick={() => onSearchTabChange('product')} className={`text-sm font-bold transition-colors md:cursor-none outline-none ${searchTab === 'product' ? 'text-black border-b-2 border-black pb-1' : 'text-gray-400 hover:text-black pb-1'}`}>
+          <button type="button" role="tab" aria-selected={searchTab === 'product'} onClick={() => onSearchTabChange('product')} className={`${searchTab === 'product' ? 'text-black' : 'hover:text-black'} transition-colors md:cursor-none outline-none`}>
             Product
           </button>
         </div>
