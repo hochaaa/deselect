@@ -1,16 +1,24 @@
 import { ProductGrid } from '../components/Product/ProductGrid';
 import { SortDropdown } from '../components/Product/SortDropdown';
+import { Brands } from './Brands';
 import { sortProducts } from '../utils/sort';
 
 export function SearchPage({
+  searchedBrands,
   searchedProducts,
   likedProductIds,
   sortOption,
+  brandSortOption,
   onSortChange,
+  onBrandSortChange,
   onProductClick,
   onToggleLike,
   onSelectBrand,
 }) {
+  if (searchedBrands !== null) {
+    return <Brands availableBrands={searchedBrands} brandSortOption={brandSortOption} onBrandSortChange={onBrandSortChange} onSelectBrand={onSelectBrand} />;
+  }
+
   const sortedSearchProducts = sortProducts(searchedProducts, sortOption);
 
   return (

@@ -19,6 +19,7 @@ import { QnaDetail } from './pages/QnaDetail';
 import { QnaWrite } from './pages/QnaWrite';
 import { SearchPage } from './pages/Search';
 import { fetchUserRole } from './utils/admin';
+import { normalizeBrandSearch } from './utils/search';
 import { validateSignUpForm } from './utils/validation';
 
 const emptyQnaForm = { productId: '', title: '', content: '' };
@@ -42,6 +43,10 @@ export default function App() {
   const [searchedProducts, setSearchedProducts] = useState(() => {
     const saved = sessionStorage.getItem('searchedProducts');
     return saved ? JSON.parse(saved) : [];
+  });
+  const [searchedBrands, setSearchedBrands] = useState(() => {
+    const saved = sessionStorage.getItem('searchedBrands');
+    return saved ? JSON.parse(saved) : null;
   });
 
   const [likedTab, setLikedTab] = useState('products');
@@ -146,9 +151,10 @@ export default function App() {
     sessionStorage.setItem('selectedCategory', selectedCategory);
     sessionStorage.setItem('selectedSubCategory', selectedSubCategory);
     sessionStorage.setItem('searchedProducts', JSON.stringify(searchedProducts));
+    sessionStorage.setItem('searchedBrands', JSON.stringify(searchedBrands));
     sessionStorage.setItem('sortOption', sortOption);
     sessionStorage.setItem('brandSortOption', brandSortOption);
-  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, sortOption, brandSortOption]);
+  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, searchedBrands, sortOption, brandSortOption]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -286,11 +292,22 @@ export default function App() {
     if (!searchQuery.trim()) return;
 
     const query = searchQuery.trim().toLowerCase();
-    const matchedBrand = availableBrands.find((b) => b.toLowerCase() === query);
+    const normalizedQuery = normalizeBrandSearch(query);
+    const matchedBrand = availableBrands.find((brand) => normalizeBrandSearch(brand) === normalizedQuery);
     if (matchedBrand) {
       selectBrand(matchedBrand);
       setIsSearchOpen(false);
       setSearchQuery('');
+      return;
+    }
+
+    const matchedBrands = availableBrands.filter((brand) => normalizeBrandSearch(brand).includes(normalizedQuery));
+    if (matchedBrands.length > 0) {
+      setSearchedBrands(matchedBrands);
+      setCurrentView('search');
+      setIsSearchOpen(false);
+      setSearchQuery('');
+      setIsMobileMenuOpen(false);
       return;
     }
 
@@ -300,6 +317,7 @@ export default function App() {
     }
 
     setSearchedProducts(matchedProducts);
+    setSearchedBrands(null);
     setCurrentView('search');
     setIsSearchOpen(false);
     setSearchQuery('');
@@ -439,7 +457,7 @@ export default function App() {
       case 'category':
         return <Category products={products} selectedCategory={selectedCategory} selectedSubCategory={selectedSubCategory} likedProductIds={likedProductIds} sortOption={sortOption} onSelectCategory={selectCategory} onSelectSubCategory={setSelectedSubCategory} onSortChange={setSortOption} onProductClick={handleProductClick} onToggleLike={toggleLike} onSelectBrand={selectBrand} />;
       case 'search':
-        return <SearchPage searchedProducts={searchedProducts} likedProductIds={likedProductIds} sortOption={sortOption} onSortChange={setSortOption} onProductClick={handleProductClick} onToggleLike={toggleLike} onSelectBrand={selectBrand} />;
+        return <SearchPage searchedBrands={searchedBrands} searchedProducts={searchedProducts} likedProductIds={likedProductIds} sortOption={sortOption} brandSortOption={brandSortOption} onSortChange={setSortOption} onBrandSortChange={setBrandSortOption} onProductClick={handleProductClick} onToggleLike={toggleLike} onSelectBrand={selectBrand} />;
       case 'mypage':
         return <MyPage currentUser={currentUser} onLiked={() => { setCurrentView('liked'); setLikedTab('products'); }} />;
       case 'liked':
