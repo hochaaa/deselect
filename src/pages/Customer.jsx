@@ -1,9 +1,7 @@
 import { MessageSquare } from 'lucide-react';
-import { QnaProductSummary } from '../components/Qna/QnaProductSummary';
 import { QnaStatusBadge } from '../components/Qna/QnaStatusBadge';
-import { findProductById } from '../utils/product';
 
-export function Customer({ qnaList, products, currentUser, onRequireWrite, onSelectQna }) {
+export function Customer({ qnaList, currentUser, onRequireWrite, onSelectQna }) {
   return (
     <div className="mt-32 w-full md:cursor-none">
       <div className="flex justify-between items-center mb-5 md:cursor-none">
@@ -21,28 +19,22 @@ export function Customer({ qnaList, products, currentUser, onRequireWrite, onSel
       </div>
 
       <div className="flex flex-col md:cursor-none">
-        {qnaList.map((qna) => {
-          const product = findProductById(products, qna.product_id);
-          return (
-            <button
-              key={qna.id}
-              onClick={() => onSelectQna(qna)}
-              className="flex flex-col md:flex-row md:items-center justify-between p-6 border-b border-gray-100 hover:bg-gray-50 transition md:cursor-none outline-none text-left gap-4"
-            >
-              <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 flex-1 md:cursor-none">
-                <QnaStatusBadge hasReply={Boolean(qna.reply)} />
-                <div className="flex flex-col md:cursor-none">
-                  <QnaProductSummary product={product} productId={qna.product_id} compact />
-                  <h4 className="font-bold text-lg md:cursor-none">{qna.title}</h4>
-                </div>
-              </div>
-              <div className="flex items-center gap-6 text-sm text-gray-400 font-medium min-w-fit md:cursor-none">
-                <span className="md:cursor-none">{qna.author}</span>
-                <span className="md:cursor-none">{new Date(qna.created_at).toLocaleDateString()}</span>
-              </div>
-            </button>
-          );
-        })}
+        {qnaList.map((qna) => (
+          <button
+            key={qna.id}
+            onClick={() => onSelectQna(qna)}
+            className="flex flex-col md:flex-row md:items-center justify-between p-6 border-b border-gray-100 hover:bg-gray-50 transition md:cursor-none outline-none text-left gap-4"
+          >
+            <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 flex-1 md:cursor-none">
+              <QnaStatusBadge hasReply={Boolean(qna.reply)} />
+              <h4 className="font-bold text-lg md:cursor-none">{qna.title}</h4>
+            </div>
+            <div className="flex items-center gap-6 text-sm text-gray-400 font-medium min-w-fit md:cursor-none">
+              <span className="md:cursor-none">{qna.author}</span>
+              <span className="md:cursor-none">{new Date(qna.created_at).toLocaleDateString()}</span>
+            </div>
+          </button>
+        ))}
 
         {qnaList.length === 0 && (
           <div className="text-center py-32 md:cursor-none">
