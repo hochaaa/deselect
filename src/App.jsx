@@ -46,8 +46,9 @@ export default function App() {
   });
   const [searchedBrands, setSearchedBrands] = useState(() => {
     const saved = sessionStorage.getItem('searchedBrands');
-    return saved ? JSON.parse(saved) : null;
+    return saved ? JSON.parse(saved) || [] : [];
   });
+  const [searchTab, setSearchTab] = useState(() => sessionStorage.getItem('searchTab') || 'brand');
 
   const [likedTab, setLikedTab] = useState('products');
   const [likedProductIds, setLikedProductIds] = useState([]);
@@ -152,9 +153,10 @@ export default function App() {
     sessionStorage.setItem('selectedSubCategory', selectedSubCategory);
     sessionStorage.setItem('searchedProducts', JSON.stringify(searchedProducts));
     sessionStorage.setItem('searchedBrands', JSON.stringify(searchedBrands));
+    sessionStorage.setItem('searchTab', searchTab);
     sessionStorage.setItem('sortOption', sortOption);
     sessionStorage.setItem('brandSortOption', brandSortOption);
-  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, searchedBrands, sortOption, brandSortOption]);
+  }, [currentView, isProductMenuOpen, selectedBrand, selectedCategory, selectedSubCategory, searchedProducts, searchedBrands, searchTab, sortOption, brandSortOption]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -293,31 +295,12 @@ export default function App() {
 
     const query = searchQuery.trim().toLowerCase();
     const normalizedQuery = normalizeBrandSearch(query);
-    const matchedBrand = availableBrands.find((brand) => normalizeBrandSearch(brand) === normalizedQuery);
-    if (matchedBrand) {
-      selectBrand(matchedBrand);
-      setIsSearchOpen(false);
-      setSearchQuery('');
-      return;
-    }
-
     const matchedBrands = availableBrands.filter((brand) => normalizeBrandSearch(brand).includes(normalizedQuery));
-    if (matchedBrands.length > 0) {
-      setSearchedBrands(matchedBrands);
-      setCurrentView('search');
-      setIsSearchOpen(false);
-      setSearchQuery('');
-      setIsMobileMenuOpen(false);
-      return;
-    }
+    const matchedProducts = products.filter((product) => normalizeBrandSearch(product.name).includes(normalizedQuery));
 
-    let matchedProducts = products.filter((p) => p.name.toLowerCase() === query);
-    if (matchedProducts.length === 0) {
-      matchedProducts = products.filter((p) => p.name.toLowerCase().includes(query));
-    }
-
+    setSearchedBrands(matchedBrands);
     setSearchedProducts(matchedProducts);
-    setSearchedBrands(null);
+    setSearchTab(matchedBrands.length > 0 ? 'brand' : 'product');
     setCurrentView('search');
     setIsSearchOpen(false);
     setSearchQuery('');
@@ -457,7 +440,7 @@ export default function App() {
       case 'category':
         return <Category products={products} selectedCategory={selectedCategory} selectedSubCategory={selectedSubCategory} likedProductIds={likedProductIds} sortOption={sortOption} onSelectCategory={selectCategory} onSelectSubCategory={setSelectedSubCategory} onSortChange={setSortOption} onProductClick={handleProductClick} onToggleLike={toggleLike} onSelectBrand={selectBrand} />;
       case 'search':
-        return <SearchPage searchedBrands={searchedBrands} searchedProducts={searchedProducts} likedProductIds={likedProductIds} sortOption={sortOption} brandSortOption={brandSortOption} onSortChange={setSortOption} onBrandSortChange={setBrandSortOption} onProductClick={handleProductClick} onToggleLike={toggleLike} onSelectBrand={selectBrand} />;
+        return <SearchPage searchedBrands={searchedBrands} searchedProducts={searchedProducts} searchTab={searchTab} onSearchTabChange={setSearchTab} likedProductIds={likedProductIds} sortOption={sortOption} brandSortOption={brandSortOption} onSortChange={setSortOption} onBrandSortChange={setBrandSortOption} onProductClick={handleProductClick} onToggleLike={toggleLike} onSelectBrand={selectBrand} />;
       case 'mypage':
         return <MyPage currentUser={currentUser} onLiked={() => { setCurrentView('liked'); setLikedTab('products'); }} />;
       case 'liked':

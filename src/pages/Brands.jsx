@@ -1,6 +1,20 @@
 import { BrandSortDropdown } from '../components/Product/SortDropdown';
 import { sortBrands } from '../utils/sort';
 
+export function BrandList({ brands, onSelectBrand }) {
+  return (
+    <ul className="flex flex-col gap-6 text-4xl font-medium tracking-tighter md:cursor-none">
+      {brands.map((brand) => (
+        <li key={brand}>
+          <button onClick={() => onSelectBrand(brand)} className="hover:text-gray-400 transition md:cursor-none text-left outline-none">
+            {brand}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function Brands({ availableBrands, brandSortOption, onBrandSortChange, onSelectBrand }) {
   const sortedBrands = sortBrands(availableBrands, brandSortOption);
 
@@ -18,18 +32,7 @@ export function Brands({ availableBrands, brandSortOption, onBrandSortChange, on
         </div>
       </div>
 
-      <ul className="flex flex-col gap-6 text-4xl font-medium tracking-tighter md:cursor-none">
-        {sortedBrands.map((brand) => (
-          <li key={brand}>
-            <button
-              onClick={() => onSelectBrand(brand)}
-              className="hover:text-gray-400 transition md:cursor-none text-left outline-none"
-            >
-              {brand}
-            </button>
-          </li>
-        ))}
-      </ul>
+      <BrandList brands={sortedBrands} onSelectBrand={onSelectBrand} />
     </div>
   );
 }
